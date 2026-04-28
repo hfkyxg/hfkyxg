@@ -13,54 +13,31 @@ permissions:
 
 jobs:
   generate-snake:
-    name: Generate Snake Animation
+    name: Generate Snake
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
-      - name: Generate Purple Snake SVG
+      - name: Generate Snake
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
-          outputs: dist/snake.svg
+          outputs: |
+            dist/snake.svg
+            dist/snake-dark.svg
       
-      - name: Generate Dark Theme (Purple)
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: dist/snake-dark.svg
+      - name: Verify
+        run: ls -la dist/
       
-      - name: List Generated Files
-        run: |
-          echo "=== Arquivos gerados ==="
-          ls -la dist/
-          echo ""
-          echo "===Verificando cor da cobra==="
-          if grep -q "ef476f" dist/snake.svg 2>/dev/null; then
-            echo "✅ Cobra VERMELHA detectada no SVG"
-          else
-            echo "⚠️ Verificando conteúdo..."
-            head -50 dist/snake.svg | grep -i "color\|fill\|stroke" || echo "Arquivo gerado"
-          fi
-      
-      - name: Deploy to Output Branch
+      - name: Deploy
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: output
           build_dir: dist
-          commit_message: "🐍 Update snake [skip ci]"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Report
-        if: success()
-        run: echo "✅ Snake generation completed!"
-      
-      - name: Report Error
-        if: failure()
-        run: echo "❌ Snake generation failed"
