@@ -2,7 +2,7 @@ name: Generate Snake Game
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 */4 * * *"
   workflow_dispatch:
   push:
     branches: [main]
@@ -23,25 +23,29 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Generate Red Snake
+      - name: Generate Red Snake SVG
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake.svg?color_snake=ef476f&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-            dist/snake-dark.svg?color_snake=ef476f&color_dots=#161b22,#0e4429,#006d32,#26a641
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          outputs: dist/snake.svg
       
-      - name: Verify Generated Files
+      - name: Generate Dark Theme Snake (Red)
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: dist/snake-dark.svg
+      
+      - name: List Generated Files
         run: |
-          echo "Verificando arquivos..."
+          echo "=== Arquivos gerados ==="
           ls -la dist/
-          if [ -f "dist/snake.svg" ]; then
-            echo "✅ snake.svg gerado (VERMELHO)"
-          fi
-          if [ -f "dist/snake-dark.svg" ]; then
-            echo "✅ snake-dark.svg gerado"
+          echo ""
+          echo "===Verificando cor da cobra==="
+          if grep -q "ef476f" dist/snake.svg 2>/dev/null; then
+            echo "✅ Cobra VERMELHA detectada no SVG"
+          else
+            echo "⚠️ Verificando conteúdo..."
+            head -50 dist/snake.svg | grep -i "color\|fill\|stroke" || echo "Arquivo gerado"
           fi
       
       - name: Deploy to Output Branch
@@ -49,14 +53,14 @@ jobs:
         with:
           target_branch: output
           build_dir: dist
-          commit_message: "🐍 Update snake animation [skip ci]"
+          commit_message: "🐍 Update snake [skip ci]"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Success
+      - name: Report
         if: success()
-        run: echo "✅ Cobra VERMELHA atualizada!"
+        run: echo "✅ Snake generation completed!"
       
-      - name: Failure
+      - name: Report Error
         if: failure()
-        run: echo "❌ Erro na geração"
+        run: echo "❌ Snake generation failed"
