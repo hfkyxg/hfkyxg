@@ -11,19 +11,28 @@ permissions:
   contents: write
   pages: write
 
+concurrency:
+  group: snake-generation
+  cancel-in-progress: true
+
 jobs:
   generate-snake:
-    name: Generate Snake
+    name: Generate Snake Animation
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      snake-generated: ${{ steps.verify.outputs.generated }}
     
     steps:
-      - name: Checkout
+      - name: Checkout Repository
+        id: checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       
-      - name: Generate Snake
+      - name: Generate Snake SVGs
+        id: generate
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
@@ -31,13 +40,38 @@ jobs:
             dist/snake.svg
             dist/snake-dark.svg
       
-      - name: Verify
-        run: ls -la dist/
+      - name: Verify Generated Files
+        id: verify
+        run: |
+          echo "generated=false" >> $GITHUB_OUTPUT
+          if [ -f "dist/snake.svg" ]; then
+            echo "generated=true" >> $GITHUB_OUTPUT
+            echo "✅ Snake SVG gerado com sucesso"
+            ls -lh dist/snake.svg
+          else
+            echo "❌ Snake SVG nao encontrado"
+            exit 1
+          fi
       
-      - name: Deploy
+      - name: Deploy to Output Branch
+        if: success()
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: output
           build_dir: dist
+          commit_message: "🐍 Update snake [skip ci]"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Report Success
+        if: success()
+        run: |
+          echo "✅ Snake animation atualizada!"
+          echo "📁 Arquivos disponiveis em: https://github.com/hfkyxg/hfkyxg/tree/output
+      
+      - name: Report Failure
+        if: failure()
+        run: |
+          echo "❌ Falha na geracao do snake"
+          echo "🔍 Verifique os logs acima"
+          exit 1
