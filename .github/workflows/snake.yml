@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   generate-snake:
-    name: Generate Multi-Color Snake
+    name: Generate Snake Animation
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
@@ -23,137 +23,40 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Generate Blue Snake (Default)
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake.svg?color_snake=00b4d8&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Green Snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake-green.svg?color_snake=06d6a0&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Purple Snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake-purple.svg?color_snake=9b5de5&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
       - name: Generate Red Snake
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/snake-red.svg?color_snake=ef476f&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Orange Snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake-orange.svg?color_snake=ff6b35&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Pink Snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake-pink.svg?color_snake=ff0aaf&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Teal Snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake-teal.svg?color_snake=20c997&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Cyan Snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake-cyan.svg?color_snake=00ffff&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Lime Snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake-lime.svg?color_snake=aacc00&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Coral Snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake-coral.svg?color_snake=ff6f61&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Default Snake (RED)
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
             dist/snake.svg?color_snake=ef476f&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
-      
-      - name: Generate Dark Snake
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/snake-dark.svg?color_snake=ffd60a&color_dots=#161b22,#0e4429,#006d32,#26a641
+            dist/snake-dark.svg?color_snake=ef476f&color_dots=#161b22,#0e4429,#006d32,#26a641
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Verify All Generated Files
+      - name: Verify Generated Files
         run: |
-          echo "=== Verificando arquivos gerados ==="
+          echo "Verificando arquivos..."
           ls -la dist/
-          echo ""
-          failed=0
-          for color in blue green purple red orange pink teal cyan lime coral dark; do
-            if [ -f "dist/snake-${color}.svg" ]; then
-              echo "✅ snake-${color}.svg - OK"
-            else
-              echo "❌ snake-${color}.svg - FALHOU"
-              failed=1
-            fi
-          done
           if [ -f "dist/snake.svg" ]; then
-            echo "✅ snake.svg (default) - OK"
-          else
-            echo "❌ snake.svg (default) - FALHOU"
-            failed=1
+            echo "✅ snake.svg gerado (VERMELHO)"
           fi
-          if [ $failed -eq 1 ]; then
-            echo ""
-            echo "❌ Alguns arquivos não foram gerados!"
-            exit 1
+          if [ -f "dist/snake-dark.svg" ]; then
+            echo "✅ snake-dark.svg gerado"
           fi
-          echo ""
-          echo "✅ Todos os 11 arquivos gerados com sucesso!"
       
       - name: Deploy to Output Branch
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: output
           build_dir: dist
-          commit_message: "🐍 Update multi-color snake [skip ci]"
+          commit_message: "🐍 Update snake animation [skip ci]"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Report Success
+      - name: Success
         if: success()
-        run: |
-          echo "✅ Snake game multi-cor atualizado!"
-          echo "🎨 11 variações de cores da COBRA geradas (bolinhas mantidas iguais)!"
+        run: echo "✅ Cobra VERMELHA atualizada!"
       
-      - name: Report Failure
+      - name: Failure
         if: failure()
-        run: |
-          echo "❌ Falha na geração."
-          echo "🔍 Verifique os logs acima."
+        run: echo "❌ Erro na geração"
