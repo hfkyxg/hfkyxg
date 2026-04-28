@@ -1,55 +1,61 @@
 # Frank Hepfener Fernandes 👋
 
-[![Perfil visualizado](https://komarev.com/ghpvc/?username=hfkyxg&label=Perfil%20visualizado&color=0e75b6&style=flat)](https://github.com/hfkyxg)
-[![Seguidores](https://img.shields.io/github/followers/hfkyxg?label=Seguidores&style=social)](https://github.com/hfkyxg)
+Olá! Que bom que você chegou até aqui. Sou Frank, desenvolvedor de Araraquara, São Paulo.
 
-[![Disponível para contratação](https://img.shields.io/badge/Dispon%C3%ADvel%20para%20contrata%C3%A7%C3%A3o-Sim-brightgreen?style=for-the-badge&logo=handshake)](https://github.com/hfkyxg)
-[![Localização](https://img.shields.io/badge/Araraquara,%20SP-Brasil-blue?style=for-the-badge&logo=google-maps&logoColor=white)](https://www.google.com/maps/place/Araraquara,+SP)
+[![Perfil visualizado](https://komarev.com/ghpvc/?username=hfkyxg&label=visualiza%C3%A7%C3%B5es&color=0e75b6&style=flat)](https://github.com/hfkyxg)
+[![Seguidores](https://img.shields.io/github/followers/hfkyxg?label=seguidores&style=social)](https://github.com/hfkyxg)
 
----
-
-## Sobre mim
-
-Desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafios e aprendizado.
-
-- 🌎 **Localização**: Araraquara, São Paulo, Brasil
-- 💼 **Status**: Aberto a oportunidades (remoto ou presencial)
-- 🎯 **Foco**: Java, C#, .NET, Spring Boot, JavaScript/TypeScript
-- 🎮 **Curiosidade**: Gosto de jogos retrô, daí o Snake Game no perfil!
+[![Contratação](https://img.shields.io/badge/Dispon%C3%ADvel%20para%20trabalhar-Sim-brightgreen?style=for-the-badge&logo=handshake)](https://github.com/hfkyxg)
+[![Local](https://img.shields.io/badge/Araraquara,%20SP-Brasil-blue?style=for-the-badge&logo=google-maps&logoColor=white)](https://www.google.com/maps/place/Araraquara,+SP)
 
 ---
 
-## Stack Tecnológica
+## Quem sou eu
+
+Sou aquela pessoa que fica pensando "e se eu fizesse isso de outra forma?" antes de dormir. Adoro resolver problemas e criar soluções que fazem sentido. Sempre aprendendo algo novo porque tecnologia não para quieta.
+
+Na verdade, tudo começou jogando videogame e querendo saber como aquilo funcionava. Agora, transformo ideias em código.
+
+📍 **De onde venho**: Araraquara, São Paulo, Brasil  
+💼 **Bora trabalhar juntos?** Estou aberto a oportunidades!  
+🎯 **O que me anima**: Java, C#, .NET, Spring Boot, React, TypeScript  
+🎮 **Por que o jogo da cobra?** Jogo retrô = nostalgia boa
+
+---
+
+## O que eu sei fazer
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white" alt="Java"/>
-  <img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white" alt="C#"/>
-  <img src="https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET"/>
-  <img src="https://img.shields.io/badge/Spring%20Boot-6DB33D?style=for-the-badge&logo=springboot&logoColor=white" alt="Spring Boot"/>
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript"/>
-  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
-  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
-  <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" alt="Git"/>
-  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white"/>
+  <img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white"/>
+  <img src="https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=dotnet&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-6DB33D?style=for-the-badge&logo=springboot&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"/>
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black"/>
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
 </div>
 
 ---
 
-## 🐍 Snake Game
+## O jogo da cobra 🐍
+
+Aquele joguinho clássico que todo mundo conhece. Sim, eu coloquei ele aqui no perfil porque jogos retrô são legais e porque agora eu sei fazer um!
 
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/hfkyxg/output/snake.svg">
-    <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" alt="Snake animation" width="600"/>
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg">
+    <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" alt="Snake animation" width="500"/>
   </picture>
 </div>
 
 ---
 
-## Estatísticas
+## Minhas estatísticas
 
 <div align="center">
   <img height="180em" src="https://github-readme-stats.vercel.app/api?username=hfkyxg&show_icons=true&theme=dracula&include_all_commits=true&count_private=true&hide_border=true"/>
@@ -58,7 +64,7 @@ Desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafios e apr
 
 ---
 
-## Streak
+## Dias de código 🔥
 
 <div align="center">
   <img src="https://streak-stats.demolab.com/?user=hfkyxg&theme=dracula&hide_border=true"/>
@@ -66,7 +72,7 @@ Desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafios e apr
 
 ---
 
-## Contato
+## Bora conversar?
 
 <div align="center">
   <a href="https://github.com/hfkyxg">
@@ -83,7 +89,7 @@ Desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafios e apr
 ---
 
 <div align="center">
-  <strong>⭐ Obrigado pela visita! ⭐</strong>
+  <strong>Obrigado por passar aqui! ⭐</strong>
   <br>
-  <sub>Feito com 💙 por Frank Hepfener Fernandes</sub>
+  <sub>Frank Hepfener Fernandes</sub>
 </div>
