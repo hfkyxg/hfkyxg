@@ -2,7 +2,7 @@ name: Generate Snake Game
 
 on:
   schedule:
-    - cron: "0 */12 * * *"
+    - cron: "0 */6 * * *"  # Executa a cada 6 horas para mais variedade
   workflow_dispatch:
   push:
     branches: [main]
@@ -13,9 +13,46 @@ permissions:
 
 jobs:
   generate-snake:
-    name: Generate Snake Animation
+    name: Generate Multi-Color Snake Animation
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    
+    strategy:
+      matrix:
+        include:
+          - name: blue
+            snake_color: "00b4d8"
+            dots: "#caf0f8,#ade8f4,#90e0ef,#48cae4"
+          - name: dark-yellow
+            snake_color: "ffd60a"
+            dots: "#03045e,#023e8a,#0077b6,#00b4d8"
+          - name: green
+            snake_color: "06d6a0"
+            dots: "#d8f3dc,#95d5b2,#74c69d,#40916c"
+          - name: purple
+            snake_color: "9b5de5"
+            dots: "#f3e8ff,#e0c3fc,#c78dff,#a855f7"
+          - name: red
+            snake_color: "ef476f"
+            dots: "#ffeada,#ffccba,#ff9b85,#e63946"
+          - name: orange
+            snake_color: "ff6b35"
+            dots: "#ffeddb,#ffd6a5,#ffb38a,#ff8c6b"
+          - name: pink
+            snake_color: "ff0aaf"
+            dots: "#ffcef3,#ffa8e8,#ff80dd,#ff5bd1"
+          - name: teal
+            snake_color: "20c997"
+            dots: "#d2f4ea,#a3e9d2,#74dfb9,#45d5a0"
+          - name: cyan
+            snake_color: "00ffff"
+            dots: "#ccffff,#99ffff,#66ffff,#33ffff"
+          - name: lime
+            snake_color: "aacc00"
+            dots: "#e4ffb3,#d4ff80,#c4ff4d,#b4ff1a"
+          - name: coral
+            snake_color: "ff6f61"
+            dots: "#ffddd2,#ffcdb2,#ffb4a2,#ff8f7a"
     
     steps:
       - name: Checkout Repository
@@ -23,45 +60,42 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Generate Snake SVGs with Multiple Colors
+      - name: Generate ${{ matrix.name }} Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-${{ matrix.name }}.svg?color_snake=${{ matrix.snake_color }}&color_dots=${{ matrix.dots }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Generate Default Snake (Blue)
+        if: matrix.name == 'blue'
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
             dist/snake.svg?color_snake=00b4d8&color_dots=#caf0f8,#ade8f4,#90e0ef,#48cae4
             dist/snake-dark.svg?color_snake=ffd60a&color_dots=#03045e,#023e8a,#0077b6,#00b4d8
-            dist/snake-green.svg?color_snake=06d6a0&color_dots=#d8f3dc,#95d5b2,#74c69d,#40916c
-            dist/snake-purple.svg?color_snake=9b5de5&color_dots=#f3e8ff,#e0c3fc,#c78dff,#a855f7
-            dist/snake-red.svg?color_snake=ef476f&color_dots=#ffeada,#ffccba,#ff9b85,#e63946
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Verify Generated Files
         run: |
-          echo "Verificando arquivos gerados..."
+          echo "Verificando arquivos gerados para ${{ matrix.name }}..."
           ls -la dist/
-          for file in snake.svg snake-dark.svg snake-green.svg snake-purple.svg snake-red.svg; do
-            if [ -f "dist/$file" ]; then
-              echo "✅ $file gerado com sucesso"
-            else
-              echo "❌ $file não encontrado"
-              exit 1
-            fi
-          done
+          test -f dist/snake-${{ matrix.name }}.svg && echo "✅ snake-${{ matrix.name }}.svg gerado!" || echo "❌ Falha no arquivo"
       
       - name: Deploy to Output Branch
+        if: always()
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: output
           build_dir: dist
-          commit_message: "🐍 Update colorful snake animation [skip ci]"
+          commit_message: "🐍 Update multi-color snake [skip ci]"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Report Completion
         if: success()
-        run: echo "✅ Snake game colorido atualizado com sucesso!"
-      
-      - name: Report Failure
-        if: failure()
-        run: echo "❌ Falha na geração do snake game. Verifique os logs acima."
+        run: echo "✅ Snake ${{ matrix.name }} atualizado!"

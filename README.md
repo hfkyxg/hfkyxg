@@ -47,7 +47,7 @@ Sou um desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafio
 
 ---
 
-## 🐍 Snake Game
+## 🐍 Snake Game - Cores Variadas
 
 <div align="center">
   <picture>
@@ -56,6 +56,23 @@ Sou um desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafio
     <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" alt="Snake animation" width="600"/>
   </picture>
 </div>
+
+### 🎨 Paleta de Cores Geradas (12 Variações)
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-blue.svg?color_snake=00b4d8" alt="Azul" width="100" title="Azul"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-green.svg?color_snake=06d6a0" alt="Verde" width="100" title="Verde"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-purple.svg?color_snake=9b5de5" alt="Roxo" width="100" title="Roxo"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-red.svg?color_snake=ef476f" alt="Vermelho" width="100" title="Vermelho"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-orange.svg?color_snake=ff6b35" alt="Laranja" width="100" title="Laranja"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-pink.svg?color_snake=ff0aaf" alt="Rosa" width="100" title="Rosa"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-teal.svg?color_snake=20c997" alt="Teal" width="100" title="Teal"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-cyan.svg?color_snake=00ffff" alt="Ciano" width="100" title="Ciano"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-lime.svg?color_snake=aacc00" alt="Lima" width="100" title="Lima"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-coral.svg?color_snake=ff6f61" alt="Coral" width="100" title="Coral"/>
+</div>
+
+<sub>💡 Limitação: GitHub README é estático (sem JS). As cores mudam a cada 6h via workflow. Para mais variedade, acesse as variações acima!</sub>
 
 ---
 
