@@ -24,13 +24,15 @@ jobs:
         with:
           fetch-depth: 0     # Necessário para histórico completo do snake
       
-      - name: Generate Snake SVGs
+      - name: Generate Snake SVGs with Vibrant Colors
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/snake.svg
-            dist/snake-dark.svg?palette=github-dark&color_snake=orange
+            dist/snake.svg?color_snake=ff6b6b&color_dots=#61ffe6,#61b3ff,#4c8dff,#3b5bdb
+            dist/snake-dark.svg?palette=github-dark&color_snake=ffd93d&color_dots=#2d3436,#636e72,#b2bec3,#dfe6e9
+            dist/snake-green.svg?color_snake=00b894&color_dots=#55efc4,#00b894,#00cec9,#0984e3
+            dist/snake-purple.svg?color_snake=a29bfe&color_dots=#fd79a8,#e84393,#6c5ce7,#a29bfe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
