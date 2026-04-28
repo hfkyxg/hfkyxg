@@ -51,8 +51,8 @@ Sou um desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafio
 
 ### ⚙️ Backend & Frameworks
 <div align="center">
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"/>
-  <img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=sharp&logoColor=white" alt="C#"/>
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white" alt="Java"/>
+  <img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white" alt="C#"/>
   <img src="https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white" alt=".NET"/>
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33D?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot"/>
   <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"/>
@@ -84,13 +84,14 @@ Sou um desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafio
 ### 🎨 Cores Disponíveis (Geradas Automaticamente)
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg?color_snake=ff6b6b" alt="Red Snake" width="150"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-dark.svg" alt="Yellow Snake" width="150"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-green.svg" alt="Green Snake" width="150"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-purple.svg" alt="Purple Snake" width="150"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" alt="Blue Snake" width="150" title="Azul"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-dark.svg" alt="Yellow Snake" width="150" title="Amarelo (Dark)"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-green.svg" alt="Green Snake" width="150" title="Verde"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-purple.svg" alt="Purple Snake" width="150" title="Roxo"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-red.svg" alt="Red Snake" width="150" title="Vermelho"/>
 </div>
 
-<sub>💡 As cores mudam automaticamente a cada execução do workflow (12h) - o GitHub não suporta JS para mudança em reload</sub>
+<sub>💡 Cores vibrantes geradas automaticamente a cada 12h - GitHub README é estático (sem JS)</sub>
 
 ---
 

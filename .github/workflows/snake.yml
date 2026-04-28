@@ -24,15 +24,40 @@ jobs:
         with:
           fetch-depth: 0     # Necessário para histórico completo do snake
       
-      - name: Generate Snake SVGs with Vibrant Colors
+      - name: Generate Colorful Snake - Default (Blue)
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/snake.svg?color_snake=ff6b6b&color_dots=#61ffe6,#61b3ff,#4c8dff,#3b5bdb
-            dist/snake-dark.svg?palette=github-dark&color_snake=ffd93d&color_dots=#2d3436,#636e72,#b2bec3,#dfe6e9
-            dist/snake-green.svg?color_snake=00b894&color_dots=#55efc4,#00b894,#00cec9,#0984e3
-            dist/snake-purple.svg?color_snake=a29bfe&color_dots=#fd79a8,#e84393,#6c5ce7,#a29bfe
+            dist/snake.svg?color_snake=00b4d8&color_dots=#caf0f8,#ade8f4,#90e0ef,#48cae4
+      
+      - name: Generate Snake - Dark Theme (Yellow)
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-dark.svg?color_snake=ffd60a&color_dots=#03045e,#023e8a,#0077b6,#00b4d8
+      
+      - name: Generate Snake - Green Theme
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-green.svg?color_snake=06d6a0&color_dots=#d8f3dc,#95d5b2,#74c69d,#40916c
+      
+      - name: Generate Snake - Purple Theme
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-purple.svg?color_snake=9b5de5&color_dots=#f3e8ff,#e0c3fc,#c78dff,#a855f7
+      
+      - name: Generate Snake - Red Theme
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-red.svg?color_snake=ef476f&color_dots=#ffeada,#ffccba,#ff9b85,#e63946
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -40,21 +65,22 @@ jobs:
         run: |
           echo "Verificando arquivos gerados..."
           ls -la dist/
-          test -f dist/snake.svg && echo "✅ snake.svg gerado com sucesso" || exit 1
-          test -f dist/snake-dark.svg && echo "✅ snake-dark.svg gerado com sucesso" || exit 1
+          for file in snake.svg snake-dark.svg snake-green.svg snake-purple.svg snake-red.svg; do
+            test -f dist/$file && echo "✅ $file gerado com sucesso" || echo "❌ $file não encontrado"
+          done
       
       - name: Deploy to Output Branch
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: output
           build_dir: dist
-          commit_message: "🐍 Update snake animation [skip ci]"
+          commit_message: "🐍 Update colorful snake animation [skip ci]"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Report Completion
         if: success()
-        run: echo "✅ Snake game atualizado com sucesso!"
+        run: echo "✅ Snake game colorido atualizado com sucesso!"
       
       - name: Report Failure
         if: failure()
