@@ -2,61 +2,36 @@ name: Generate Snake Game
 
 on:
   schedule:
-    - cron: "0 */12 * * *"  # Executa a cada 12 horas
-  workflow_dispatch:          # Permite execução manual
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
   push:
-    branches: [main]         # Executa em pushes para main
+    branches: [main]
 
-# Permissões mínimas necessárias (princípio do menor privilégio)
 permissions:
-  contents: write            # Apenas escrita de conteúdo
-  pages: write              # Para deploy no GitHub Pages (output branch)
+  contents: write
+  pages: write
 
 jobs:
   generate-snake:
     name: Generate Snake Animation
     runs-on: ubuntu-latest
-    timeout-minutes: 10      # Evita execuções infinitas
+    timeout-minutes: 10
     
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0     # Necessário para histórico completo do snake
+          fetch-depth: 0
       
-      - name: Generate Colorful Snake - Default (Blue)
+      - name: Generate Snake SVGs with Multiple Colors
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
             dist/snake.svg?color_snake=00b4d8&color_dots=#caf0f8,#ade8f4,#90e0ef,#48cae4
-      
-      - name: Generate Snake - Dark Theme (Yellow)
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
             dist/snake-dark.svg?color_snake=ffd60a&color_dots=#03045e,#023e8a,#0077b6,#00b4d8
-      
-      - name: Generate Snake - Green Theme
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
             dist/snake-green.svg?color_snake=06d6a0&color_dots=#d8f3dc,#95d5b2,#74c69d,#40916c
-      
-      - name: Generate Snake - Purple Theme
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
             dist/snake-purple.svg?color_snake=9b5de5&color_dots=#f3e8ff,#e0c3fc,#c78dff,#a855f7
-      
-      - name: Generate Snake - Red Theme
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
             dist/snake-red.svg?color_snake=ef476f&color_dots=#ffeada,#ffccba,#ff9b85,#e63946
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,7 +41,12 @@ jobs:
           echo "Verificando arquivos gerados..."
           ls -la dist/
           for file in snake.svg snake-dark.svg snake-green.svg snake-purple.svg snake-red.svg; do
-            test -f dist/$file && echo "✅ $file gerado com sucesso" || echo "❌ $file não encontrado"
+            if [ -f "dist/$file" ]; then
+              echo "✅ $file gerado com sucesso"
+            else
+              echo "❌ $file não encontrado"
+              exit 1
+            fi
           done
       
       - name: Deploy to Output Branch
