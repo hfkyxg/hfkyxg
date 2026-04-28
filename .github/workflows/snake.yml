@@ -93,7 +93,14 @@ jobs:
           outputs: |
             dist/snake-coral.svg?color_snake=ff6f61&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
       
-      - name: Generate Dark/Yellow Snake
+      - name: Generate Default Snake (RED)
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake.svg?color_snake=ef476f&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Dark Snake
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
