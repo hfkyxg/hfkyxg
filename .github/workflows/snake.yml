@@ -23,27 +23,86 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Generate All Snake Colors
+      - name: Generate Blue Snake (Default)
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/snake-blue.svg?color_snake=00b4d8&color_dots=#caf0f8,#ade8f4,#90e0ef,#48cae4
-            dist/snake-green.svg?color_snake=06d6a0&color_dots=#d8f3dc,#95d5b2,#74c69d,#40916c
-            dist/snake-purple.svg?color_snake=9b5de5&color_dots=#f3e8ff,#e0c3fc,#c78dff,#a855f7
-            dist/snake-red.svg?color_snake=ef476f&color_dots=#ffeada,#ffccba,#ff9b85,#e63946
-            dist/snake-orange.svg?color_snake=ff6b35&color_dots=#ffeddb,#ffd6a5,#ffb38a,#ff8f6b
-            dist/snake-pink.svg?color_snake=ff0aaf&color_dots=#ffcef3,#ffa8e8,#ff80dd,#ff5bd1
-            dist/snake-teal.svg?color_snake=20c997&color_dots=#d2f4ea,#a3e9d2,#74dfb9,#45d5a0
-            dist/snake-cyan.svg?color_snake=00ffff&color_dots=#ccffff,#99ffff,#66ffff,#33ffff
-            dist/snake-lime.svg?color_snake=aacc00&color_dots=#e4ffb3,#d4ff80,#c4ff4d,#b4ff1a
-            dist/snake-coral.svg?color_snake=ff6f61&color_dots=#ffddd2,#ffcdb2,#ffb4a2,#ff8f7a
-            dist/snake-dark.svg?color_snake=ffd60a&color_dots=#03045e,#023e8a,#0077b6,#00b4d8
-            dist/snake.svg?color_snake=00b4d8&color_dots=#caf0f8,#ade8f4,#90e0ef,#48cae4
+            dist/snake.svg?color_snake=00b4d8&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Green Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-green.svg?color_snake=06d6a0&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Purple Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-purple.svg?color_snake=9b5de5&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Red Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-red.svg?color_snake=ef476f&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Orange Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-orange.svg?color_snake=ff6b35&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Pink Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-pink.svg?color_snake=ff0aaf&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Teal Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-teal.svg?color_snake=20c997&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Cyan Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-cyan.svg?color_snake=00ffff&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Lime Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-lime.svg?color_snake=aacc00&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Coral Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-coral.svg?color_snake=ff6f61&color_dots=#ebedf0,#9be9a8,#40c463,#30a14e
+      
+      - name: Generate Dark/Yellow Snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-dark.svg?color_snake=ffd60a&color_dots=#161b22,#0e4429,#006d32,#26a641
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Verify Generated Files
+      - name: Verify All Generated Files
         run: |
           echo "=== Verificando arquivos gerados ==="
           ls -la dist/
@@ -84,10 +143,10 @@ jobs:
         if: success()
         run: |
           echo "✅ Snake game multi-cor atualizado!"
-          echo "🎨 11 variações de cores geradas com sucesso!"
+          echo "🎨 11 variações de cores da COBRA geradas (bolinhas mantidas iguais)!"
       
       - name: Report Failure
         if: failure()
         run: |
           echo "❌ Falha na geração."
-          echo "🔍 Verifique se Platane/snk@v3 suporta múltiplas saídas na mesma execução."
+          echo "🔍 Verifique os logs acima."
