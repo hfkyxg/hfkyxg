@@ -23,13 +23,13 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Generate Red Snake SVG
+      - name: Generate Purple Snake SVG
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: dist/snake.svg
       
-      - name: Generate Dark Theme Snake (Red)
+      - name: Generate Dark Theme (Purple)
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
