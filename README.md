@@ -47,7 +47,7 @@ Sou um desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafio
 
 ---
 
-## 🐍 Snake Game - Cores Variadas
+## 🐍 Snake Game
 
 <div align="center">
   <picture>
@@ -56,23 +56,6 @@ Sou um desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafio
     <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" alt="Snake animation" width="600"/>
   </picture>
 </div>
-
-### 🎨 Paleta de Cores Geradas (11 Variações)
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-blue.svg" alt="Azul" width="100" title="Azul"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-green.svg" alt="Verde" width="100" title="Verde"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-purple.svg" alt="Roxo" width="100" title="Roxo"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-red.svg" alt="Vermelho" width="100" title="Vermelho"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-orange.svg" alt="Laranja" width="100" title="Laranja"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-pink.svg" alt="Rosa" width="100" title="Rosa"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-teal.svg" alt="Teal" width="100" title="Teal"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-cyan.svg" alt="Ciano" width="100" title="Ciano"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-lime.svg" alt="Lima" width="100" title="Lima"/>
-  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-coral.svg" alt="Coral" width="100" title="Coral"/>
-</div>
-
-<sub>💡 11 cores vibrantes geradas automaticamente. GitHub README é estático (sem JS), então as cores mudam via workflow a cada 6h.</sub>
 
 ---
 
