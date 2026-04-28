@@ -77,9 +77,20 @@ Sou um desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafio
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg">
-    <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" alt="Snake animation" width="400"/>
+    <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" alt="Snake animation" width="600"/>
   </picture>
 </div>
+
+### 🎨 Cores Disponíveis (Geradas Automaticamente)
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg?color_snake=ff6b6b" alt="Red Snake" width="150"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-dark.svg" alt="Yellow Snake" width="150"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-green.svg" alt="Green Snake" width="150"/>
+  <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-purple.svg" alt="Purple Snake" width="150"/>
+</div>
+
+<sub>💡 As cores mudam automaticamente a cada execução do workflow (12h) - o GitHub não suporta JS para mudança em reload</sub>
 
 ---
 
