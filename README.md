@@ -42,8 +42,6 @@ Tudo começou jogando videogame e querendo saber como aquilo funcionava. Agora, 
 
 ## Snake Game 🐍
 
-O clássico joguinho da cobra. Sim, eu que fiz aparecer aqui!
-
 <div align="center">
   <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" alt="Snake" width="500"/>
 </div>
