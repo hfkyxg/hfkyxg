@@ -50,6 +50,8 @@ O clássico joguinho da cobra. Sim, eu que fiz aparecer aqui!
 
 ---
 
+<!--COMMIT-BADGE-->
+<!--/COMMIT-BADGE-->
 ## Estatísticas GitHub
 
 <div align="center">

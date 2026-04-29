@@ -1,0 +1,22 @@
+name: Atualiza README
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Gera badge de commits
+        run: |
+          curl -s "https://img.shields.io/github/commits-since/hfkyxg/hfkyxg?label=commits&style=flat" > .github/commits.svg
+      - name: Atualiza README
+        run: |
+          perl -0777 -i -pe 's/<!--COMMIT-BADGE-->.*?<!--\/COMMIT-BADGE-->/<!--COMMIT-BADGE-->\n![Commits](.\/github\/commits.svg)\n<!--\/COMMIT-BADGE-->/s' README.md
+      - name: Commit e push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "🤖 Atualiza badge de commits"
+          branch: main
