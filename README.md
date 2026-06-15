@@ -1,203 +1,225 @@
 <div align="center">
 
-<!-- Animated header -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=180&section=header&text=Frank%20Hepfener&fontSize=42&fontColor=fff&animation=twinkling&fontAlignY=32&desc=Full%20Stack%20Developer%20%7C%20Araraquara%2C%20SP&descAlignY=55&descSize=18" width="100%"/>
+<!-- ╔═══════════════════════════════════════════════════════════╗ -->
+<!-- ║              ⚔  FRANK.EXE — PRESS START  ⚔               ║ -->
+<!-- ╚═══════════════════════════════════════════════════════════╝ -->
 
-<!-- Typing animation -->
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&pause=1000&color=A855F7&center=true&vCenter=true&width=600&lines=Ol%C3%A1!+Que+bom+que+voc%C3%AA+chegou+aqui+%F0%9F%91%8B;Transformo+ideias+em+c%C3%B3digo+%F0%9F%9A%80;Java+%7C+C%23+%7C+.NET+%7C+React+%7C+TypeScript;Sempre+aprendendo+algo+novo+%F0%9F%93%9A;Aberto+a+novas+oportunidades+%F0%9F%92%BC)](https://git.io/typing-svg)
+<img src="https://capsule-render.vercel.app/api?type=venom&color=0:8B5CF6,100:22D3EE&height=200&section=header&text=FRANK%20HEPFENER&fontSize=46&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=%E2%9A%94%EF%B8%8F%20%20Full-Stack%20Developer%20%C2%B7%20Lvl%2099%20%20%E2%9A%94%EF%B8%8F&descAlignY=60&descSize=16&fontFamily=Press+Start+2P" width="100%"/>
 
-<!-- Badges -->
-[![Visualizações](https://komarev.com/ghpvc/?username=hfkyxg&label=Visitantes&color=a855f7&style=for-the-badge)](https://github.com/hfkyxg)
-[![Seguidores](https://img.shields.io/github/followers/hfkyxg?label=Seguidores&style=for-the-badge&color=6366f1&logo=github)](https://github.com/hfkyxg)
-[![Disponível](https://img.shields.io/badge/💼%20Disponível%20para%20trabalhar-Sim-22c55e?style=for-the-badge)](https://www.linkedin.com/in/frank-hepfener/)
+<br/>
+
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Press+Start+2P&size=14&pause=900&color=A855F7&center=true&vCenter=true&multiline=false&width=720&height=45&lines=%3E+INICIANDO+SISTEMA...;%3E+CARREGANDO+PERSONAGEM...;%3E+BEM-VINDO%2C+VIAJANTE+%E2%9A%94%EF%B8%8F;%3E+PRESSIONE+START+PARA+EXPLORAR)](https://git.io/typing-svg)
+
+<br/>
+
+![Visitors](https://komarev.com/ghpvc/?username=hfkyxg&label=VIAJANTES&color=8b5cf6&style=for-the-badge)
+![Followers](https://img.shields.io/github/followers/hfkyxg?label=GUILDA&style=for-the-badge&color=22d3ee&logo=github&logoColor=white)
+![Status](https://img.shields.io/badge/STATUS-ONLINE-22c55e?style=for-the-badge&logo=statuspage&logoColor=white)
+![Class](https://img.shields.io/badge/CLASSE-CODE%20MAGE-f59e0b?style=for-the-badge&logo=wizardsofthecoast&logoColor=white)
 
 </div>
 
 ---
 
-## 👾 Quem sou eu
+## 🗺️ `> NEW_GAME.start()`
 
-```java
-public class Frank extends Developer {
-
-    String nome     = "Frank Hepfener Fernandes";
-    String local    = "Araraquara, SP, Brasil";
-    String status   = "Aberto a oportunidades 🚀";
-
-    String[] apaixonado_por = {
-        "Java", "C#", ".NET", "Spring Boot",
-        "React", "TypeScript", "IA & Automação"
-    };
-
-    String curiosidade = "Tudo começou jogando videogame e querendo saber como aquilo funcionava.";
-
-    String frase() {
-        return "Aquela pessoa que fica pensando 'e se eu fizesse de outra forma?' antes de dormir.";
-    }
-}
+```ansi
+╔══════════════════════════════════════════════════════════════════╗
+║  PERSONAGEM:  Frank Hepfener Fernandes                           ║
+║  CLASSE:      Full-Stack Code Mage   ◆ Especialização: Backend  ║
+║  ORIGEM:      Araraquara, SP — Brasil 🇧🇷                        ║
+║  NÍVEL:       99 (e subindo)         ◆ XP: ∞                    ║
+║  STATUS:      🟢 Aceitando novas missões (open to work)          ║
+╠══════════════════════════════════════════════════════════════════╣
+║  LORE:                                                           ║
+║  Começou a jornada jogando videogame e perguntando               ║
+║  "como isso funciona por dentro?". Hoje constrói mundos          ║
+║  digitais em Java, C# e .NET, e nas horas vagas treina           ║
+║  magias em React + TypeScript.                                   ║
+╚══════════════════════════════════════════════════════════════════╝
 ```
 
 ---
 
-## 🛠️ Stack & Skills
+## 📊 `> CHARACTER_STATS`
 
 <div align="center">
 
-### ⚙️ Backend
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![C#](https://img.shields.io/badge/C%23-68217A?style=for-the-badge&logo=c-sharp&logoColor=white)
-![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-
-### 🎨 Frontend
-![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-
-### 🗄️ Banco de Dados & Cloud
-![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-
-### 🤖 Inteligência Artificial
-![Claude AI](https://img.shields.io/badge/Claude%20AI-D97706?style=for-the-badge&logo=anthropic&logoColor=white)
-![Claude Code](https://img.shields.io/badge/Claude%20Code%20CLI-7C3AED?style=for-the-badge&logo=anthropic&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
-![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
-
-</div>
-
----
-
-## 🐍 Snake Game — Meu histórico de commits virou um jogo!
-
-> Cada quadradinho é um commit. Assiste a cobrinha devorar minha jornada de dev 😄
-
-<div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-dark.svg"/>
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg"/>
-    <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" alt="Snake game com histórico de contribuições" width="100%"/>
-  </picture>
-</div>
-
----
-
-## 📊 Estatísticas GitHub
-
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=hfkyxg&show_icons=true&hide_border=true&theme=tokyonight&include_all_commits=true&count_private=true&rank_icon=github" height="180"/>
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=hfkyxg&layout=compact&hide_border=true&theme=tokyonight&langs_count=8" height="180"/>
-</div>
-
-<div align="center">
-  <img src="https://streak-stats.demolab.com/?user=hfkyxg&theme=tokyonight&hide_border=true" width="600"/>
-</div>
-
----
-
-## 🏆 Conquistas
-
-<div align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=hfkyxg&theme=tokyonight&hide_border=true&no-bg=true&column=6&margin-w=5"/>
-</div>
-
----
-
-## 📈 Atividade Recente
-
-<div align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=hfkyxg&theme=tokyo-night&hide_border=true&area=true" width="100%"/>
-</div>
-
----
-
-## 🤖 Por que uso Claude AI no meu fluxo de trabalho?
-
-> Sim, Claude está na minha stack — e faz diferença real.
+<table>
+<tr>
+<td width="50%">
 
 ```
-✅ Revisão e refatoração de código em tempo real
-✅ Geração de testes automatizados
-✅ Documentação técnica instantânea
-✅ Debug inteligente com contexto do projeto
-✅ Automação de tarefas repetitivas via Claude Code CLI
-✅ Pair programming disponível 24/7
+╔═══════════════════════════════════════╗
+║  ⚔️   ATAQUE      ████████████░░  92  ║
+║  🛡️   DEFESA      ██████████░░░░  78  ║
+║  ✨  MAGIA       █████████████░  95  ║
+║  ❤️   VITALIDADE  ███████████░░░  85  ║
+║  💎  MANA        █████████████░  98  ║
+║  🍀  SORTE       █████████░░░░░  70  ║
+╚═══════════════════════════════════════╝
 ```
 
-**Claude Code** é o assistente de IA da Anthropic direto no terminal. Com ele, consigo:
-- Fazer code review completo com um comando
-- Automatizar refatorações em múltiplos arquivos
-- Integrar IA diretamente no meu fluxo Git
-
----
-
-## 🎮 Easter Eggs
-
-<details>
-<summary>🕹️ Clique aqui para um joguinho rápido</summary>
+</td>
+<td width="50%">
 
 ```
-     🐍 SNAKE HIGH SCORES 🐍
-   ┌─────────────────────────┐
-   │  1. Frank      ∞  pts   │
-   │  2. Você?      ?  pts   │
-   │  3. ---        -  pts   │
-   └─────────────────────────┘
-
-  Use ↑ ↓ ← → para jogar...
-  (mas não tem como jogar aqui mesmo 😄)
-  
-  Vai lá no meu repositório e cria um fork!
+╔═══════════════════════════════════════╗
+║  🧠  LÓGICA      ██████████████  99  ║
+║  ☕  CAFEÍNA     ██████████████  ∞   ║
+║  🐛  CAÇA-BUGS   ████████████░░  88  ║
+║  📚  CURIOSIDADE ██████████████  99  ║
+║  🎯  FOCO        ████████████░░  90  ║
+║  🤝  TRABALHO_EQ █████████████░  94  ║
+╚═══════════════════════════════════════╝
 ```
 
-</details>
-
-<details>
-<summary>☕ Quantos cafés por linha de código?</summary>
-
-```python
-commits = 1000        # meus commits
-cafes_por_commit = 2  # média honesta
-
-print(f"Total de cafés consumidos: {commits * cafes_por_commit}")
-# Output: Total de cafés consumidos: 2000 ☕
-```
-
-</details>
-
-<details>
-<summary>🧠 Pensamento do dia</summary>
-
-> *"Tudo começou jogando videogame e querendo saber como aquilo funcionava."*
->
-> — Frank, provavelmente às 2h da manhã debugando algo
-
-</details>
-
----
-
-## 📬 Contato
-
-<div align="center">
-
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/hfkyxg)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/frank-hepfener/)
-[![Email](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:fernandesfrank88@gmail.com)
+</td>
+</tr>
+</table>
 
 </div>
 
 ---
 
-<div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=120&section=footer&animation=twinkling" width="100%"/>
-</div>
+## 🎒 `> INVENTORY.open()` — Armas & Grimórios
 
 <div align="center">
-  <strong>Obrigado por passar aqui! Se curtiu, deixa uma ⭐</strong>
-  <br/>
-  <sub>Feito com ☕ + 💜 por Frank Hepfener Fernandes</sub>
+
+### 🗡️ **ARMAS PRIMÁRIAS** — Backend Arsenal
+
+![Java](https://img.shields.io/badge/JAVA-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white&labelColor=000000)
+![C#](https://img.shields.io/badge/C%23-68217A?style=for-the-badge&logo=csharp&logoColor=white&labelColor=000000)
+![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white&labelColor=000000)
+![Spring](https://img.shields.io/badge/SPRING-6DB33F?style=for-the-badge&logo=spring&logoColor=white&labelColor=000000)
+![Python](https://img.shields.io/badge/PYTHON-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=000000)
+![Node.js](https://img.shields.io/badge/NODE.JS-339933?style=for-the-badge&logo=nodedotjs&logoColor=white&labelColor=000000)
+
+### 🏹 **ARMAS SECUNDÁRIAS** — Frontend Spellbook
+
+![React](https://img.shields.io/badge/REACT-61DAFB?style=for-the-badge&logo=react&logoColor=white&labelColor=000000)
+![TypeScript](https://img.shields.io/badge/TYPESCRIPT-3178C6?style=for-the-badge&logo=typescript&logoColor=white&labelColor=000000)
+![JavaScript](https://img.shields.io/badge/JAVASCRIPT-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black&labelColor=000000)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white&labelColor=000000)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white&labelColor=000000)
+![Tailwind](https://img.shields.io/badge/TAILWIND-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white&labelColor=000000)
+
+### 🛡️ **EQUIPAMENTOS** — DevOps & Banco de Dados
+
+![Docker](https://img.shields.io/badge/DOCKER-2496ED?style=for-the-badge&logo=docker&logoColor=white&labelColor=000000)
+![Git](https://img.shields.io/badge/GIT-F05032?style=for-the-badge&logo=git&logoColor=white&labelColor=000000)
+![GitHub](https://img.shields.io/badge/GITHUB-181717?style=for-the-badge&logo=github&logoColor=white&labelColor=000000)
+![PostgreSQL](https://img.shields.io/badge/POSTGRES-4169E1?style=for-the-badge&logo=postgresql&logoColor=white&labelColor=000000)
+![MySQL](https://img.shields.io/badge/MYSQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white&labelColor=000000)
+![MongoDB](https://img.shields.io/badge/MONGODB-47A248?style=for-the-badge&logo=mongodb&logoColor=white&labelColor=000000)
+
+### ✨ **MAGIAS RARAS** — IA & Automação
+
+![OpenAI](https://img.shields.io/badge/OPENAI-412991?style=for-the-badge&logo=openai&logoColor=white&labelColor=000000)
+![Linux](https://img.shields.io/badge/LINUX-FCC624?style=for-the-badge&logo=linux&logoColor=black&labelColor=000000)
+![VSCode](https://img.shields.io/badge/VS%20CODE-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white&labelColor=000000)
+
+</div>
+
+---
+
+## 🏰 `> QUEST_LOG` — Missões em Andamento
+
+<div align="center">
+
+| 🎮 QUEST | 📜 DESCRIÇÃO | ⚔️ TECNOLOGIAS | 🏆 STATUS |
+|:---:|:---|:---:|:---:|
+| **🧩 Robustus** | Sistema MVP de gestão completo — minha quest principal | `Java` `Spring` `React` | ![](https://img.shields.io/badge/EM%20PROGRESSO-f59e0b?style=flat-square) |
+| **🐍 Snake Saga** | A serpente que devora meus commits no perfil | `GitHub Actions` `SVG` | ![](https://img.shields.io/badge/CONCLU%C3%8DDA-22c55e?style=flat-square) |
+| **🎨 Portfolio** | Este README estilo RPG que você está lendo agora | `Markdown` `Pixel Art` | ![](https://img.shields.io/badge/ATIVA-22d3ee?style=flat-square) |
+| **🚀 Próxima** | Aguardando convocação da guilda... | `?` `?` `?` | ![](https://img.shields.io/badge/DISPON%C3%8DVEL-a855f7?style=flat-square) |
+
+</div>
+
+---
+
+## 🐍 `> SNAKE_BOSS` — A Serpente dos Commits
+
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" />
+  <img alt="Snake animation devorando contribuições" src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/output/snake.svg" />
+</picture>
+
+</div>
+
+---
+
+## 📈 `> BATTLE_RECORD` — Estatísticas de Combate
+
+<div align="center">
+
+<img height="180" src="https://github-readme-stats.vercel.app/api?username=hfkyxg&show_icons=true&theme=midnight-purple&include_all_commits=true&count_private=true&hide_border=true&bg_color=0d1117&title_color=a855f7&icon_color=22d3ee&text_color=ffffff" />
+<img height="180" src="https://github-readme-stats.vercel.app/api/top-langs/?username=hfkyxg&layout=compact&langs_count=8&theme=midnight-purple&hide_border=true&bg_color=0d1117&title_color=a855f7&text_color=ffffff" />
+
+<br/>
+
+<img src="https://streak-stats.demolab.com?user=hfkyxg&theme=midnight-purple&hide_border=true&background=0d1117&stroke=8b5cf6&ring=22d3ee&fire=f59e0b&currStreakLabel=a855f7" alt="GitHub Streak" />
+
+<br/><br/>
+
+<img src="https://github-profile-trophy.vercel.app/?username=hfkyxg&theme=darkhub&no-frame=true&no-bg=true&column=7&margin-w=8" alt="Trophies"/>
+
+</div>
+
+---
+
+## 🎮 `> ACTIVITY_GRAPH` — Mapa de Aventuras
+
+<div align="center">
+
+[![Frank's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=hfkyxg&bg_color=0d1117&color=22d3ee&line=a855f7&point=f59e0b&area=true&hide_border=true)](https://github.com/ashutosh00710/github-readme-activity-graph)
+
+</div>
+
+---
+
+## 📬 `> CONTACT.npc()` — Falar com o NPC
+
+<div align="center">
+
+> *"Ei, viajante! Se você chegou até aqui, é porque a história te interessou.<br/>
+> Que tal trocarmos algumas palavras? Estou sempre disponível para uma nova aventura."*
+
+<br/>
+
+[![GitHub](https://img.shields.io/badge/GITHUB-181717?style=for-the-badge&logo=github&logoColor=white&labelColor=000000)](https://github.com/hfkyxg)
+[![LinkedIn](https://img.shields.io/badge/LINKEDIN-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=000000)](https://www.linkedin.com/in/frank-hepfener)
+[![Email](https://img.shields.io/badge/E--MAIL-EA4335?style=for-the-badge&logo=gmail&logoColor=white&labelColor=000000)](mailto:fernandesfrank88@gmail.com)
+[![Location](https://img.shields.io/badge/LOCAL-Araraquara%2C%20SP-22D3EE?style=for-the-badge&logo=googlemaps&logoColor=white&labelColor=000000)](https://www.google.com/maps/place/Araraquara,+SP)
+
+</div>
+
+---
+
+## 🪙 `> CREDITS`
+
+<div align="center">
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║   "Não programo apenas para que o código rode.               ║
+║    Programo para que ele conte uma história."                ║
+║                                                              ║
+║                              — Frank, Code Mage Nv. 99       ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+<br/>
+
+**⭐ Se gostou da aventura, deixe uma estrela em algum repositório!**
+
+<br/>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:22D3EE,100:8B5CF6&height=120&section=footer&text=GAME%20OVER%20%3F&fontSize=24&fontColor=ffffff&animation=twinkling&fontAlignY=70&desc=INSERT%20COIN%20TO%20CONTINUE&descAlignY=90&descSize=12" width="100%"/>
+
 </div>
