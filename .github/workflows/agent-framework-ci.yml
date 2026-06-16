@@ -1,0 +1,31 @@
+name: agent-framework CI
+
+on:
+  push:
+    paths:
+      - "agent-framework/**"
+      - ".github/workflows/agent-framework-ci.yml"
+  pull_request:
+    paths:
+      - "agent-framework/**"
+      - ".github/workflows/agent-framework-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agent-framework
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - name: Install system dependencies
+        run: sudo apt-get install -y ripgrep
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Lint
+        run: uv run ruff check .
+      - name: Tests
+        run: uv run pytest
