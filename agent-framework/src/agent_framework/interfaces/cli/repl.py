@@ -29,7 +29,7 @@ async def run_repl(persona: Persona, workdir: str) -> None:
 
     session = Session.with_system_prompt(persona.system_prompt)
     console.print(
-        f"[bold green]nexo[/bold green] — persona: [cyan]{persona.name}[/cyan]"
+        f"[bold green]apathy[/bold green] — persona: [cyan]{persona.name}[/cyan]"
     )
     console.print(f"  model: [dim]{persona.provider}[/dim]  workdir: [dim]{workdir}[/dim]")
     console.print("  Type [bold]/exit[/bold] or Ctrl+C to quit.\n")
