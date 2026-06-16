@@ -8,8 +8,8 @@ import typer
 from agent_framework.core.persona import Persona
 
 app = typer.Typer(
-    name="agent-framework",
-    help="Multi-provider AI agent framework CLI",
+    name="apathy",
+    help="apathy — autonomous agent framework with parallel multi-agent execution",
     no_args_is_help=True,
 )
 
@@ -32,6 +32,28 @@ def chat(
 
     p = Persona.from_yaml(persona)
     asyncio.run(run_repl(p, workdir))
+
+
+@app.command()
+def build(
+    objective: str = typer.Argument(..., help="What to build, e.g. 'a REST API with FastAPI'"),
+    workspace: Path = typer.Option(
+        Path("./build-output"),
+        "--workspace",
+        "-w",
+        help="Directory where the project will be created",
+    ),
+    personas_dir: Path = typer.Option(
+        Path("personas"),
+        "--personas-dir",
+        help="Directory containing role persona YAML files",
+    ),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Plan only, do not execute"),
+) -> None:
+    """Build a software project using a team of specialized agents working in parallel."""
+    from agent_framework.interfaces.cli.crew_runner import run_build
+
+    asyncio.run(run_build(objective, workspace, personas_dir, dry_run=dry_run))
 
 
 def main() -> None:

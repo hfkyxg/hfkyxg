@@ -9,60 +9,6 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "agent-framework"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "beautifulsoup4" },
-    { name = "httpx" },
-    { name = "litellm" },
-    { name = "mcp" },
-    { name = "pydantic" },
-    { name = "pydantic-settings" },
-    { name = "pyyaml" },
-    { name = "rich" },
-    { name = "typer" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "mypy" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "ruff" },
-]
-discord = [
-    { name = "discord-py" },
-]
-slack = [
-    { name = "slack-bolt" },
-]
-telegram = [
-    { name = "python-telegram-bot" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "beautifulsoup4", specifier = ">=4.12" },
-    { name = "discord-py", marker = "extra == 'discord'", specifier = ">=2.4" },
-    { name = "httpx", specifier = ">=0.27" },
-    { name = "litellm", specifier = ">=1.55" },
-    { name = "mcp", specifier = ">=1.2" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11" },
-    { name = "pydantic", specifier = ">=2.7" },
-    { name = "pydantic-settings", specifier = ">=2.4" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24" },
-    { name = "python-telegram-bot", marker = "extra == 'telegram'", specifier = ">=21.0" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "rich", specifier = ">=13.7" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
-    { name = "slack-bolt", marker = "extra == 'slack'", specifier = ">=1.20" },
-    { name = "typer", specifier = ">=0.12" },
-]
-provides-extras = ["discord", "slack", "telegram", "dev"]
-
-[[package]]
 name = "aiohappyeyeballs"
 version = "2.6.2"
 source = { registry = "https://pypi.org/simple" }
@@ -232,6 +178,60 @@ sdist = { url = "https://files.pythonhosted.org/packages/1c/b5/001890774a9552aff
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ba/16/9826f089383c593cdfc4a6e5aca94d9e91ae1692c57af82c3b2aa5e810f7/anyio-4.14.0-py3-none-any.whl", hash = "sha256:dd9b7a2a9799ed6552fde617b2c5df02b7fdd7d88392fc48101e51bae46164d9", size = 123506, upload-time = "2026-06-15T22:00:47.595Z" },
 ]
+
+[[package]]
+name = "apathy"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "beautifulsoup4" },
+    { name = "httpx" },
+    { name = "litellm" },
+    { name = "mcp" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+    { name = "pyyaml" },
+    { name = "rich" },
+    { name = "typer" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
+]
+discord = [
+    { name = "discord-py" },
+]
+slack = [
+    { name = "slack-bolt" },
+]
+telegram = [
+    { name = "python-telegram-bot" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "beautifulsoup4", specifier = ">=4.12" },
+    { name = "discord-py", marker = "extra == 'discord'", specifier = ">=2.4" },
+    { name = "httpx", specifier = ">=0.27" },
+    { name = "litellm", specifier = ">=1.55" },
+    { name = "mcp", specifier = ">=1.2" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11" },
+    { name = "pydantic", specifier = ">=2.7" },
+    { name = "pydantic-settings", specifier = ">=2.4" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24" },
+    { name = "python-telegram-bot", marker = "extra == 'telegram'", specifier = ">=21.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "rich", specifier = ">=13.7" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
+    { name = "slack-bolt", marker = "extra == 'slack'", specifier = ">=1.20" },
+    { name = "typer", specifier = ">=0.12" },
+]
+provides-extras = ["discord", "slack", "telegram", "dev"]
 
 [[package]]
 name = "ast-serialize"

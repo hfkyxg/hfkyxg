@@ -1,7 +1,7 @@
 [project]
-name = "agent-framework"
+name = "apathy"
 version = "0.1.0"
-description = "Reusable multi-provider AI agent framework with CLI, MCP, and chat integrations"
+description = "Autonomous agent framework with parallel multi-agent execution and multi-provider LLM support"
 requires-python = ">=3.11"
 dependencies = [
     "litellm>=1.55",
@@ -22,7 +22,7 @@ telegram = ["python-telegram-bot>=21.0"]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.24", "ruff>=0.6", "mypy>=1.11"]
 
 [project.scripts]
-agent-framework = "agent_framework.interfaces.cli.app:main"
+apathy = "agent_framework.interfaces.cli.app:main"
 
 [build-system]
 requires = ["hatchling"]
