@@ -8,8 +8,8 @@ import typer
 from agent_framework.core.persona import Persona
 
 app = typer.Typer(
-    name="agent-framework",
-    help="Multi-provider AI agent framework CLI",
+    name="nexo",
+    help="NEXO — multi-provider AI agent framework",
     no_args_is_help=True,
 )
 
