@@ -9,60 +9,6 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "agent-framework"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "beautifulsoup4" },
-    { name = "httpx" },
-    { name = "litellm" },
-    { name = "mcp" },
-    { name = "pydantic" },
-    { name = "pydantic-settings" },
-    { name = "pyyaml" },
-    { name = "rich" },
-    { name = "typer" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "mypy" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "ruff" },
-]
-discord = [
-    { name = "discord-py" },
-]
-slack = [
-    { name = "slack-bolt" },
-]
-telegram = [
-    { name = "python-telegram-bot" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "beautifulsoup4", specifier = ">=4.12" },
-    { name = "discord-py", marker = "extra == 'discord'", specifier = ">=2.4" },
-    { name = "httpx", specifier = ">=0.27" },
-    { name = "litellm", specifier = ">=1.55" },
-    { name = "mcp", specifier = ">=1.2" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11" },
-    { name = "pydantic", specifier = ">=2.7" },
-    { name = "pydantic-settings", specifier = ">=2.4" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24" },
-    { name = "python-telegram-bot", marker = "extra == 'telegram'", specifier = ">=21.0" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "rich", specifier = ">=13.7" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
-    { name = "slack-bolt", marker = "extra == 'slack'", specifier = ">=1.20" },
-    { name = "typer", specifier = ">=0.12" },
-]
-provides-extras = ["discord", "slack", "telegram", "dev"]
-
-[[package]]
 name = "aiohappyeyeballs"
 version = "2.6.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1442,6 +1388,60 @@ sdist = { url = "https://files.pythonhosted.org/packages/a2/6e/371856a3fb9d31ca8
 wheels = [
     { url = "https://files.pythonhosted.org/packages/79/7b/2c79738432f5c924bef5071f933bcc9efd0473bac3b4aa584a6f7c1c8df8/mypy_extensions-1.1.0-py3-none-any.whl", hash = "sha256:1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505", size = 4963, upload-time = "2025-04-22T14:54:22.983Z" },
 ]
+
+[[package]]
+name = "nexo"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "beautifulsoup4" },
+    { name = "httpx" },
+    { name = "litellm" },
+    { name = "mcp" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+    { name = "pyyaml" },
+    { name = "rich" },
+    { name = "typer" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
+]
+discord = [
+    { name = "discord-py" },
+]
+slack = [
+    { name = "slack-bolt" },
+]
+telegram = [
+    { name = "python-telegram-bot" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "beautifulsoup4", specifier = ">=4.12" },
+    { name = "discord-py", marker = "extra == 'discord'", specifier = ">=2.4" },
+    { name = "httpx", specifier = ">=0.27" },
+    { name = "litellm", specifier = ">=1.55" },
+    { name = "mcp", specifier = ">=1.2" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11" },
+    { name = "pydantic", specifier = ">=2.7" },
+    { name = "pydantic-settings", specifier = ">=2.4" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24" },
+    { name = "python-telegram-bot", marker = "extra == 'telegram'", specifier = ">=21.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "rich", specifier = ">=13.7" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
+    { name = "slack-bolt", marker = "extra == 'slack'", specifier = ">=1.20" },
+    { name = "typer", specifier = ">=0.12" },
+]
+provides-extras = ["discord", "slack", "telegram", "dev"]
 
 [[package]]
 name = "openai"
