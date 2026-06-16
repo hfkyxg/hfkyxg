@@ -14,7 +14,10 @@ class ReadFileTool:
     input_schema = {
         "type": "object",
         "properties": {
-            "path": {"type": "string", "description": "Absolute or workspace-relative path to the file"},
+            "path": {
+                "type": "string",
+                "description": "Absolute or workspace-relative path to the file",
+            },
             "offset": {
                 "type": "integer",
                 "description": "Start reading from this line number (1-indexed)",

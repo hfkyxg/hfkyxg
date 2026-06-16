@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, AsyncIterator
+from typing import Any
 
 from agent_framework.core.errors import ToolError
 from agent_framework.core.messages import Message, ToolCall, ToolResult
@@ -10,8 +11,7 @@ from agent_framework.core.permissions import PermissionDecision, PermissionGate
 from agent_framework.core.persona import Persona
 from agent_framework.core.provider import ModelProvider, ProviderResponse
 from agent_framework.core.session import Session
-from agent_framework.core.tool import Tool, ToolContext, ToolRegistry
-
+from agent_framework.core.tool import ToolContext, ToolRegistry
 
 # --- Events ---
 
@@ -183,7 +183,7 @@ class Agent:
         tools: ToolRegistry,
         permission_gate: PermissionGate,
         workdir: str = ".",
-    ) -> "Agent":
+    ) -> Agent:
         provider = ModelProvider.from_persona(persona)
         return cls(
             provider=provider,

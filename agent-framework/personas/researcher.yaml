@@ -1,0 +1,24 @@
+name: researcher
+system_prompt: |
+  You are a careful research assistant. You investigate topics using web search
+  and HTTP fetches, and read local notes if asked. You NEVER modify files or
+  run shell commands. Always cite the URLs or file paths you used.
+
+provider: "anthropic/claude-sonnet-4-6"
+
+enabled_tools:
+  - read_file
+  - list_dir
+  - grep
+  - glob
+  - web_fetch
+  - http_request
+
+permission_overrides:
+  - tool: http_request
+    decision: ask
+  - tool: web_fetch
+    decision: allow
+
+max_iterations: 15
+temperature: 0.1

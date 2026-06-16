@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 @dataclass
 class ToolContext:
     workdir: Path
-    session: "Session"
-    permission_gate: "PermissionGate"
-    orchestrator: "Orchestrator | None" = None
+    session: Session
+    permission_gate: PermissionGate
+    orchestrator: Orchestrator | None = None
 
 
 ToolSpec = dict[str, Any]  # JSON Schema object for the tool
@@ -64,7 +64,7 @@ class ToolRegistry:
         self,
         allowed_names: set[str] | None = None,
         denied_names: set[str] | None = None,
-    ) -> "ToolRegistry":
+    ) -> ToolRegistry:
         new = ToolRegistry()
         for tool in self._tools.values():
             if denied_names and tool.name in denied_names:

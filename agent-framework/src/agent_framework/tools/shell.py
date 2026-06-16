@@ -26,7 +26,8 @@ class BashTool:
 
     async def run(self, arguments: dict[str, Any], *, context: ToolContext) -> str:
         command = arguments["command"]
-        timeout = min(arguments.get("timeout", settings.max_bash_timeout), settings.max_bash_timeout)
+        max_t = settings.max_bash_timeout
+        timeout = min(arguments.get("timeout", max_t), max_t)
         try:
             proc = await asyncio.create_subprocess_shell(
                 command,
@@ -36,7 +37,7 @@ class BashTool:
             )
             try:
                 stdout, _ = await asyncio.wait_for(proc.communicate(), timeout=timeout)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 proc.kill()
                 await proc.communicate()
                 raise ToolError(self.name, f"Command timed out after {timeout}s: {command!r}")

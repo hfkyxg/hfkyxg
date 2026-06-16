@@ -24,7 +24,7 @@ class Session:
         )
 
     @classmethod
-    def with_system_prompt(cls, system_prompt: str) -> "Session":
+    def with_system_prompt(cls, system_prompt: str) -> Session:
         s = cls()
         s.append(Message(role="system", content=system_prompt))
         return s

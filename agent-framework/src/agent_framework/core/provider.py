@@ -163,7 +163,7 @@ class ModelProvider:
         raise ProviderError(f"Could not parse tool call arguments for '{tool_name}': {raw!r}")
 
     @classmethod
-    def from_persona(cls, persona: "Persona") -> "ModelProvider":
+    def from_persona(cls, persona: Persona) -> ModelProvider:
         api_base: str | None = None
         if "ollama/" in persona.provider:
             api_base = settings.ollama_api_base

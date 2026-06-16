@@ -30,7 +30,7 @@ class Persona(BaseModel):
         return v
 
     @classmethod
-    def from_yaml(cls, path: Path) -> "Persona":
+    def from_yaml(cls, path: Path) -> Persona:
         data = yaml.safe_load(path.read_text())
         return cls(**data)
 

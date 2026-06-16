@@ -25,7 +25,7 @@ class Orchestrator:
         allowed_tools: set[str] | None = None,
         workdir: str | None = None,
     ) -> str:
-        """Spawn an isolated child agent, run it to completion, return only the final text result."""
+        """Spawn an isolated child agent, run it to completion, return only the final text."""
         from agent_framework.core.agent import Agent
         from agent_framework.core.provider import ModelProvider
 

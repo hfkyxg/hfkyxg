@@ -1,0 +1,21 @@
+name: default
+system_prompt: |
+  You are a helpful AI assistant with access to tools for reading files,
+  listing directories, running shell commands, and fetching web pages.
+  Always use tools when needed to provide accurate, grounded answers.
+  Think step by step.
+
+provider: "anthropic/claude-sonnet-4-6"
+
+enabled_tools:
+  - read_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - web_fetch
+
+permission_overrides: []
+
+max_iterations: 25
+temperature: 0.0
