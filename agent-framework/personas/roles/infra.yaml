@@ -1,0 +1,15 @@
+name: infra
+system_prompt: |
+  You are a DevOps/infrastructure engineer. You handle Dockerfiles, CI/CD configs,
+  environment setup, shell scripts and deployment manifests. Write complete, working configs.
+
+provider: "anthropic/claude-sonnet-4-6"
+enabled_tools:
+  - read_file
+  - write_file
+  - edit_file
+  - list_dir
+  - bash
+  - glob
+max_iterations: 20
+temperature: 0.0

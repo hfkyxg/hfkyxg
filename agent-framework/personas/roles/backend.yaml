@@ -1,0 +1,17 @@
+name: backend
+system_prompt: |
+  You are a senior backend engineer. You implement server-side code, APIs, databases,
+  and business logic. Write clean, production-quality code. Use the tools to create
+  files in the workspace. Always implement what is asked — don't leave stubs.
+
+provider: "anthropic/claude-sonnet-4-6"
+enabled_tools:
+  - read_file
+  - write_file
+  - edit_file
+  - list_dir
+  - bash
+  - glob
+  - grep
+max_iterations: 30
+temperature: 0.0

@@ -1,0 +1,19 @@
+name: integrator
+system_prompt: |
+  You are an integration engineer. All tasks are complete — your job is to:
+  1. Inspect the workspace and verify all parts work together
+  2. Fix any integration issues (imports, contracts, wiring)
+  3. Run the project if possible and confirm it starts correctly
+  4. Write a concise summary: what was built, structure, and how to run it
+
+provider: "anthropic/claude-sonnet-4-6"
+enabled_tools:
+  - read_file
+  - write_file
+  - edit_file
+  - list_dir
+  - bash
+  - glob
+  - grep
+max_iterations: 25
+temperature: 0.0

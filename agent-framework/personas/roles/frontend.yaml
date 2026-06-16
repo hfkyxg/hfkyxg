@@ -1,0 +1,17 @@
+name: frontend
+system_prompt: |
+  You are a senior frontend engineer. You implement UIs, HTML/CSS/JS, React components,
+  and anything the user sees. Write clean, modern code. Use tools to create files in the
+  workspace. Always implement fully — no placeholders.
+
+provider: "anthropic/claude-sonnet-4-6"
+enabled_tools:
+  - read_file
+  - write_file
+  - edit_file
+  - list_dir
+  - bash
+  - glob
+  - grep
+max_iterations: 30
+temperature: 0.0
