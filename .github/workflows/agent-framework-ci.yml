@@ -8,6 +8,7 @@ on:
   pull_request:
     paths:
       - "agent-framework/**"
+      - ".github/workflows/agent-framework-ci.yml"
 
 jobs:
   test:
