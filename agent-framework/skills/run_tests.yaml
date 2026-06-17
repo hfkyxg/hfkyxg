@@ -1,0 +1,18 @@
+name: run_tests
+description: Run tests and generate a coverage report
+version: "1.0.0"
+author: apathy
+tags: [test, qa, coverage]
+params:
+  - workspace
+steps:
+  - name: test
+    task: "rode: cd {workspace} && python -m pytest -v --tb=short 2>&1 | head -50"
+    persona: demo
+    workspace: "{workspace}"
+    auto_approve: true
+  - name: report
+    task: "escreva o arquivo {workspace}/test_report.md com relatório dos testes"
+    persona: demo
+    workspace: "{workspace}"
+    auto_approve: true

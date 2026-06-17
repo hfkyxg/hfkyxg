@@ -1,0 +1,13 @@
+name: organize_dir
+description: Autonomously organize files in a directory by type
+version: "1.0.0"
+author: apathy
+tags: [organize, files, cleanup]
+params:
+  - path
+steps:
+  - name: scan
+    task: "organize o diretório {path} por tipo de arquivo"
+    persona: demo
+    workspace: "{path}"
+    auto_approve: true

@@ -716,5 +716,128 @@ def workflows_list(
     console.print(table)
 
 
+@app.command(name="skills")
+def list_skills(
+    skills_dir: Annotated[Path, typer.Option("--skills-dir")] = Path("skills"),
+) -> None:
+    """List available skills (reusable parameterized agent workflows)."""
+    from rich.console import Console
+    from rich.table import Table
+
+    from agent_framework.core.skill import Skill
+
+    console = Console()
+    skills = Skill.load_dir(skills_dir)
+    if not skills:
+        console.print(f"[yellow]No skills found in {skills_dir}[/yellow]")
+        return
+
+    table = Table(title=f"apathy skills — {skills_dir}")
+    table.add_column("Name", style="cyan")
+    table.add_column("Version", style="dim", width=8)
+    table.add_column("Params", style="yellow")
+    table.add_column("Steps", justify="center", width=6)
+    table.add_column("Tags", style="green")
+    table.add_column("Description")
+    for s in skills:
+        table.add_row(
+            s.name,
+            s.version,
+            ", ".join(f"{{{p}}}" for p in s.params),
+            str(len(s.steps)),
+            ", ".join(s.tags),
+            s.description,
+        )
+    console.print(table)
+
+
+@app.command(name="skill")
+def run_skill(
+    skill_name: Annotated[str, typer.Argument(help="Name of the skill to run")],
+    params: Annotated[
+        list[str] | None,
+        typer.Argument(help="Parameters as key=value pairs"),
+    ] = None,
+    skills_dir: Annotated[Path, typer.Option("--skills-dir")] = Path("skills"),
+    personas_dir: Annotated[Path, typer.Option("--personas-dir")] = Path("personas"),
+    yes: Annotated[bool, typer.Option("--yes", "-y")] = False,
+) -> None:
+    """Run a skill with the given parameters (key=value ...)."""
+    from rich.console import Console
+    from rich.panel import Panel
+
+    from agent_framework.core.skill import Skill, SkillStep
+    from agent_framework.interfaces.cli.run_once import run_once
+
+    console = Console()
+    skills = {s.name: s for s in Skill.load_dir(skills_dir)}
+
+    if skill_name not in skills:
+        console.print(f"[red]Skill '{skill_name}' not found.[/red]")
+        available = ", ".join(skills.keys()) if skills else "none"
+        console.print(f"Available: {available}")
+        raise typer.Exit(1)
+
+    skill = skills[skill_name]
+
+    # Parse key=value params
+    kv: dict[str, str] = {}
+    for p in (params or []):
+        if "=" in p:
+            k, v = p.split("=", 1)
+            kv[k.strip()] = v.strip()
+
+    # Check required params
+    missing = [p for p in skill.params if p not in kv]
+    if missing:
+        console.print(f"[red]Missing required params: {missing}[/red]")
+        console.print(
+            f"Usage: apathy skill {skill_name} "
+            + " ".join(f"{p}=<value>" for p in skill.params)
+        )
+        raise typer.Exit(1)
+
+    console.print(
+        Panel(
+            f"[bold cyan]{skill.name}[/bold cyan] v{skill.version}\n"
+            f"{skill.description}\n\n"
+            + "\n".join(
+                f"  [yellow]{k}[/yellow] = [green]{v}[/green]" for k, v in kv.items()
+            ),
+            title="Running Skill",
+        )
+    )
+
+    all_personas = _load_personas(personas_dir)
+
+    async def _run() -> None:
+        for i, step in enumerate(skill.steps, 1):
+            task = skill.render_task(step, kv)
+            ws_step = SkillStep(
+                name=step.name,
+                task=step.workspace,
+                persona=step.persona,
+                workspace=step.workspace,
+                auto_approve=step.auto_approve,
+            )
+            workspace = skill.render_task(ws_step, kv)
+            persona_name = step.persona
+            if persona_name not in all_personas:
+                persona_name = next(iter(all_personas))
+
+            persona = all_personas[persona_name]
+            console.print(
+                f"[dim]Step {i}/{len(skill.steps)}: [cyan]{step.name}[/cyan][/dim]"
+            )
+            await run_once(
+                persona,
+                task,
+                workspace if workspace != "{workspace}" else ".",
+                auto_approve=yes or step.auto_approve,
+            )
+
+    asyncio.run(_run())
+
+
 def main() -> None:
     app()
