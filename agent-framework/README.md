@@ -6,51 +6,160 @@
 
 <p align="center"><b>Framework Python para agentes de IA autônomos com execução multi-agente paralela.</b></p>
 
-Apathy não tem opinião sobre qual LLM você usa, como você organiza suas ferramentas ou onde roda seus agentes. Ele se preocupa com uma coisa: pegar seu objetivo e executar — silenciosamente, eficientemente, em paralelo quando possível.
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.11+-blue" alt="Python 3.11+"/>
+  <img src="https://img.shields.io/badge/testes-175%20passando-brightgreen" alt="175 testes"/>
+  <img src="https://img.shields.io/badge/API%20key-opcional-orange" alt="API key opcional"/>
+  <img src="https://img.shields.io/badge/licença-MIT-lightgrey" alt="MIT"/>
+</p>
 
 ```bash
-# Veja o agente funcionando AGORA — sem nenhuma API key
-apathy demo
+# Gera um projeto FastAPI completo — SEM nenhuma API key
+apathy run "escreva o arquivo app.py — fastapi com CRUD" --persona personas/demo.yaml --yes
 
-# Conversa com um agente que usa ferramentas de verdade
+# Loop REPL com qualquer LLM
 apathy chat --persona personas/default.yaml
 
-# Um time de agentes construindo um projeto inteiro, em paralelo
-apathy build "API REST com FastAPI e frontend em HTML/JS" --workspace ./output
+# Time de agentes constrói um sistema inteiro em paralelo
+apathy build "API REST com FastAPI e frontend HTML/JS" --workspace ./output
 ```
 
 ---
 
-## Sumário
+## O que o apathy consegue fazer hoje
 
-- [Por que apathy](#por-que-apathy)
-- [Instalação](#instalação)
-- [Início rápido](#início-rápido)
-- [Comandos](#comandos)
-  - [demo — prova offline sem API key](#demo--prova-offline-sem-api-key)
-  - [run — executar uma tarefa única](#run--executar-uma-tarefa-única-scriptável)
-  - [chat — agente conversacional](#chat--agente-conversacional)
-  - [build — time de agentes em paralelo](#build--time-de-agentes-em-paralelo)
-  - [tools / version](#tools--version)
-- [Personas](#personas)
-- [Ferramentas](#ferramentas)
-- [Arquitetura](#arquitetura)
-- [Testes](#testes)
-- [Roadmap e melhorias planejadas](#roadmap-e-melhorias-planejadas)
+### ✅ Funciona 100% offline (sem API key)
 
----
+O `MockProvider` transforma linguagem natural em chamadas de ferramentas reais. Não é um LLM — é um motor heurístico determinístico que:
 
-## Por que apathy
+- **Cria arquivos com conteúdo real e funcional** baseado no tipo do arquivo e contexto da tarefa
+- **Executa comandos shell** (`bash`) e entrega o output real
+- **Lê, lista e busca** arquivos de verdade no disco
+- **Delega subtarefas a subagentes** — spawna um agente filho isolado em tempo real
 
-A maioria dos frameworks de agentes exige que você aprenda a abstração deles antes de fazer qualquer coisa. Apathy inverte isso: você descreve o que quer em YAML, escolhe o provedor de LLM, e o framework some.
+```bash
+# Cria um FastAPI app completo com rotas CRUD:
+apathy run "escreva o arquivo main.py — fastapi app com CRUD para items" \
+  --persona personas/demo.yaml --yes
 
-**Sem lock-in de provedor.** A camada `ModelProvider` normaliza tool-calling para qualquer LLM — troca de modelo é uma linha no YAML. O parser de argumentos tenta reparar JSON malformado antes de falhar, o que importa ao usar modelos menores ou locais.
+# Gerado: 56 linhas de FastAPI funcional:
+# from fastapi import FastAPI, HTTPException
+# from pydantic import BaseModel
+# app = FastAPI(title="Main", version="0.1.0")
+# @app.get("/items") ... @app.post("/items") ... etc.
+```
 
-**Controle real sobre permissões.** Leitura é liberada automaticamente. Escrita, shell e requests HTTP passam pelo `PermissionGate` — no modo interativo, você aprova; no modo autônomo (`build`), uma política define o que roda sem interrupção.
+### ✅ Gera código real para 14+ tipos de arquivo
 
-**Multi-agente sem mágica.** `ProjectCrew` monta um DAG de tarefas, executa as independentes com `asyncio.gather`, e cada agente roda em contexto completamente isolado. Não há estado compartilhado entre agentes — só o workspace em disco.
+O `ContentGenerator` produz templates prontos para uso:
 
-**Personas são YAML.** Nenhum código Python para criar um agente diferente. System prompt, modelo, ferramentas permitidas, política de permissão — tudo num arquivo.
+| Arquivo | Conteúdo gerado |
+|---------|----------------|
+| `main.py` + FastAPI | App completo com rotas CRUD, Pydantic, uvicorn |
+| `main.py` + CLI | argparse com subcomandos, verbose, output |
+| `test_*.py` | Pytest: 8 testes, parametrize, fixtures |
+| `analysis.py` | Leitura CSV, estatísticas, geração de dataset de exemplo |
+| `Dockerfile` | Python slim, non-root, healthcheck, COPY/RUN |
+| `Makefile` | install / test / lint / format / run / clean |
+| `requirements.txt` | Deps FastAPI ou genéricas (detectado pelo contexto) |
+| `config.json` / `.yaml` | Seções server / database / logging / features |
+| `index.html` | Dark theme, CSS inline, JS com fetch wrapper |
+| `README.md` | Seções Overview, Getting Started, estrutura |
+| `.env.example` | Template comentado com DATABASE_URL, API keys |
+| `.gitignore` | Padrões Python completos |
+| `.sh` | Bash com set -euo pipefail, log(), trap EXIT |
+| `TODO.txt` | Checklist por prioridade |
+
+**Detecção automática de contexto:** quando você diz "fastapi" na descrição, gera código FastAPI. "teste" → pytest. "docker" → Dockerfile. O motor escolhe o template certo.
+
+### ✅ Subagentes com visibilidade em tempo real
+
+O `Orchestrator` spawna agentes filhos com sessão isolada, toolset filtrado e transmite cada evento para o pai:
+
+```bash
+apathy run "delegue ao subagente: escreva o arquivo relatorio.md com conteúdo # Relatório" \
+  --persona personas/demo.yaml --yes
+```
+
+```
+╭─ Tool: task ─────────────────────────────────────────╮
+│ {'prompt': 'escreva o arquivo relatorio.md ...'}     │
+╰──────────────────────────────────────────────────────╯
+  ✓ Allowed: task
+    └─ subagente:demo usa write_file {'path': 'relatorio.md', ...}
+    └─ subagente:demo ✓ Wrote 969 characters to relatorio.md
+  ✓ task: arquivo criado com sucesso
+```
+
+O subagente roda em contexto completamente isolado e devolve apenas o resultado ao pai.
+
+### ✅ Script de projeto completo (offline)
+
+```bash
+./examples/build_fastapi_project.sh         # cria 9 arquivos de um projeto FastAPI
+./examples/run_tasks.sh                      # 5 tarefas variadas: write/read/bash/grep/delegate
+```
+
+O `build_fastapi_project.sh` gera num workspace temporário:
+```
+main.py          56 linhas  — FastAPI CRUD completo
+requirements.txt  4 linhas  — fastapi, uvicorn, pydantic
+config.json      22 linhas  — server/database/logging/features
+Dockerfile       26 linhas  — Python slim, healthcheck
+.env.example     20 linhas  — DATABASE_URL, API keys
+.gitignore       37 linhas  — padrões Python
+Makefile         20 linhas  — install/test/lint/run/clean
+tests/test_app.py 56 linhas — pytest com 8 testes
+README.md        62 linhas  — documentação completa
+```
+Total: ~9 arquivos, ~360 linhas de código real em **< 30 segundos**, sem API key.
+
+### ✅ Loop de agente completo com gate de permissão
+
+```
+Entrada do usuário
+      │
+      ▼
+ Agent.run_turn()              ← async generator; interfaces consomem os eventos
+      │
+      ├──► provider.complete() ──► LLM (qualquer via litellm) ou MockProvider (offline)
+      │           │
+      │           ▼
+      │     stop_reason == "end_turn"  ──► TurnCompleteEvent → encerra
+      │     stop_reason == "tool_calls"
+      │           │
+      │           ▼
+      │     para cada ToolCall:
+      │       ├── PermissionGate.check()
+      │       │     auto   → tool.run() direto
+      │       │     ask    → ask_callback() → usuário decide
+      │       │     deny   → ToolResult(is_error=True)
+      │       └── ToolResultEvent → volta para complete() → próximo passo
+      │
+      └──► loop até stop_reason == "end_turn" ou max_iterations
+```
+
+### ✅ Multi-provedor sem lock-in
+
+Trocar o LLM é **uma linha** no YAML da persona:
+
+```yaml
+provider: "anthropic/claude-opus-4-8"    # Claude via Anthropic
+provider: "openai/gpt-4o"                # OpenAI
+provider: "ollama/llama3.2"              # local via Ollama
+provider: "groq/llama-3.3-70b"          # Groq (ultra-rápido)
+provider: "mock/demo"                    # offline — sem API key
+```
+
+O `ModelProvider` normaliza o tool-calling para qualquer provedor. Inclui reparo de JSON malformado — importante para modelos locais que às vezes geram JSON quebrado.
+
+### ✅ 175 testes — tudo roda sem API key
+
+```bash
+uv run pytest       # 175 testes, nenhuma chamada de rede
+```
+
+Cobertura: mensagens e serialização, reparo de JSON, PermissionGate (todas as decisões), loop de agente (negação, erro de ferramenta, max_iterations), spawn de subagentes, DAG de tarefas, execução paralela, ciclo de revisão, todas as 10 ferramentas, pipeline end-to-end, content generator (14+ tipos).
 
 ---
 
@@ -61,185 +170,156 @@ Requer **Python 3.11+** e [`uv`](https://docs.astral.sh/uv/).
 ```bash
 git clone https://github.com/hfkyxg/hfkyxg
 cd hfkyxg/agent-framework
-uv sync --extra dev
+uv sync
+```
+
+Para usar com um LLM real, configure as chaves em `.env`:
+
+```bash
 cp .env.example .env
+# edite .env:
+# ANTHROPIC_API_KEY=sk-ant-...
+# OPENAI_API_KEY=sk-...
+# OLLAMA_API_BASE=http://localhost:11434
 ```
 
-Configure ao menos uma chave de API:
-
-```env
-ANTHROPIC_API_KEY=sk-ant-...
-OPENAI_API_KEY=sk-...
-OLLAMA_API_BASE=http://localhost:11434
-```
+Sem chaves: tudo funciona com a persona `mock/demo`.
 
 ---
 
 ## Início rápido
 
-A forma mais rápida de ver tudo funcionando — **sem precisar de nenhuma chave de API**:
+### Sem API key (offline)
 
 ```bash
-apathy demo
+# Demonstração completa do loop de agente
+uv run apathy demo
+
+# Gerar um arquivo com código real
+uv run apathy run "escreva o arquivo app.py — fastapi com CRUD" \
+  --persona personas/demo.yaml --yes
+
+# Criar um projeto completo (9 arquivos)
+./examples/build_fastapi_project.sh
+
+# Agente delega para subagente
+uv run apathy run \
+  "delegue ao subagente: escreva o arquivo sub.txt com conteúdo feito-pelo-sub" \
+  --persona personas/demo.yaml --yes
+
+# Introspecção
+uv run apathy tools
+uv run apathy version
 ```
 
-O comando `demo` usa um provider offline scriptado que mapeia pedidos para chamadas de ferramenta reais. Ele cria um workspace temporário e roda o loop completo do agente — escreve um arquivo, lê de volta, lista o diretório, executa um comando shell e faz um grep — tudo de verdade, provando que o pipeline funciona de ponta a ponta.
-
-Outros comandos úteis sem API key:
+### Com API key
 
 ```bash
-apathy tools      # lista as ferramentas disponíveis e quais pedem permissão
-apathy version    # versão instalada
-```
+# Chat interativo com qualquer LLM
+uv run apathy chat --persona personas/default.yaml
 
-Com uma chave de API configurada no `.env`:
-
-```bash
-# Agente conversacional — lê arquivos de verdade, não alucina o conteúdo
-apathy chat
-
-# Time de agentes construindo um projeto inteiro
-apathy build "uma CLI de lista de tarefas em Python com SQLite" --workspace ./todo-cli
+# Time de agentes constrói um sistema inteiro
+uv run apathy build "API REST com FastAPI e auth JWT" --workspace ./projeto
 ```
 
 ---
 
 ## Comandos
 
-### `demo` — prova offline sem API key
+### `demo` — prova offline completa
 
-Roda uma sequência scriptada que exercita o loop completo do agente usando o `MockProvider` (um provider offline determinístico, não um LLM). Útil para validar a instalação, fazer smoke test em CI e entender o fluxo sem gastar tokens.
+Sequência de 5 passos que exercita o loop inteiro: write → read → list → bash → grep. Tudo em workspace temporário, tudo real.
 
 ```bash
 apathy demo
 ```
 
-```
-─── passo 1  ›  escreva o arquivo hello.txt ───
-  Tool: write_file  {'path': 'hello.txt', ...}
-  ✓ Allowed: write_file
-  ✓ write_file: Wrote 24 characters to .../hello.txt
-─── passo 4  ›  rode: echo apathy-esta-vivo ───
-  Tool: bash  {'command': 'echo apathy-esta-vivo'}
-  ✓ bash: apathy-esta-vivo
-✓ Demo concluída — o loop de ferramentas funcionou de ponta a ponta.
-```
-
-### `chat` — agente conversacional
-
-Loop interativo com qualquer LLM. O agente usa ferramentas para agir no sistema real.
+### `run` — tarefa única (scriptável)
 
 ```bash
-apathy chat --persona personas/default.yaml --workdir /meu/projeto
-apathy chat --persona personas/researcher.yaml   # sem escrita/shell
-```
-
-Ações destrutivas (escrever arquivos, executar shell) pedem confirmação antes de rodar. Leitura e busca são liberadas automaticamente.
-
-### `build` — time de agentes em paralelo
-
-Para objetivos maiores que cabem em um único agente.
-
-```bash
-apathy build "backend FastAPI com auth JWT e frontend React" --workspace ./projeto
-apathy build "script de scraping com exportação CSV e README" --workspace ./scraper
-apathy build "..." --dry-run   # mostra o plano sem executar
-```
-
-**Fluxo interno do `build`:**
-
-```
-1. Planner decompõe o objetivo em tarefas JSON com dependências
-2. TaskGraph identifica quais tarefas podem rodar em paralelo
-3. asyncio.gather executa todas as tarefas prontas simultaneamente
-4. Reviewer verifica cada entrega; se falhar → retrabalho (máx. 2 ciclos)
-5. Integrator verifica que as partes funcionam juntas e escreve o resumo final
-```
-
-> **Sem chave de API**, o `build` ainda planeja, mas o planner não consegue gerar tarefas — ele falha graciosamente com uma mensagem clara. O `build` precisa de um LLM real; o `demo` é a alternativa 100% offline.
-
-Progresso em tempo real no terminal:
-
-```
-╭─ apathy build ──────────────────────────────────╮
-│  backend FastAPI com auth JWT e frontend React  │
-╰──────────────────────────────────────────────────╯
-
-  Plano de tarefas:
-  ┌──────────┬──────────┬──────────────────────────────────┬────────────┐
-  │ ID       │ Role     │ Descrição                        │ Depends on │
-  ├──────────┼──────────┼──────────────────────────────────┼────────────┤
-  │ setup_db │ backend  │ Criar modelos SQLAlchemy e DB    │ —          │
-  │ setup_ui │ frontend │ Scaffold React + Vite            │ —          │
-  │ auth_api │ backend  │ Endpoints JWT login/register     │ setup_db   │
-  │ docker   │ infra    │ Dockerfile e docker-compose      │ auth_api   │
-  └──────────┴──────────┴──────────────────────────────────┴────────────┘
-
-  started    [backend]  setup_db
-  started    [frontend] setup_ui     ← paralelo
-  done       [backend]  setup_db
-  done       [frontend] setup_ui
-  started    [backend]  auth_api
-  done       [backend]  auth_api
-  started    [infra]    docker
-  done       [infra]    docker
-
-╭─ Build complete — SUCCESS ───────────────────────╮
-│ Projeto criado em ./projeto/                     │
-│  • backend/  FastAPI + SQLAlchemy + JWT          │
-│  • frontend/ React + Vite                        │
-│  • docker-compose.yml                            │
-│ Para rodar: docker compose up                    │
-╰──────────────────────────────────────────────────╯
-```
-
-### `run` — executar uma tarefa única (scriptável)
-
-Roda uma tarefa em linguagem natural de forma não-interativa e imprime o resultado. Ideal para automação e scripts. Funciona offline (persona `demo`) ou com LLM real.
-
-```bash
-apathy run "leia o pyproject.toml e me diga o nome do projeto"
-apathy run "escreva o arquivo nota.md com conteúdo # Minhas notas" --persona personas/demo.yaml --yes
+# Gera código com contexto automático
+apathy run "escreva o arquivo api.py — fastapi" --persona personas/demo.yaml --yes
+apathy run "escreva o arquivo tests/test_api.py" --persona personas/demo.yaml --yes
 apathy run "rode: pytest -q" --yes
-```
 
-`--yes` (`-y`) aprova automaticamente todas as ações (útil em CI/scripts). Veja `examples/run_tasks.sh` para uma demonstração reproduzível de várias tarefas reais.
-
-**Delegação a subagente** — peça para o agente delegar e ele spawna um subagente isolado, cuja atividade você vê em tempo real (indentada):
-
-```bash
+# Delegação a subagente
 apathy run "delegue ao subagente: escreva o arquivo nota.txt com conteúdo olá" \
   --persona personas/demo.yaml --yes
 ```
 
-```
-  Tool: task  {'prompt': 'escreva o arquivo nota.txt com conteúdo olá', ...}
-  ✓ Allowed: task
-    └─ subagente:demo usa write_file {'path': 'nota.txt', 'content': 'olá\n'}
-    └─ subagente:demo ✓ Wrote 4 characters to nota.txt
-  ✓ task: ...
+`--yes` (`-y`) aprova todas as ações automaticamente — ideal para CI e scripts.
+
+### `chat` — REPL conversacional
+
+```bash
+apathy chat                                  # persona padrão
+apathy chat --persona personas/researcher.yaml
+apathy chat --workdir /meu/projeto
 ```
 
-O subagente roda em sessão própria, com toolset filtrado, e devolve só o resultado final ao agente pai — exatamente o padrão de orquestração que o `build` usa em escala.
+Ações de leitura liberadas automaticamente. Escrita, shell e HTTP pedem confirmação.
+
+### `build` — time de agentes em paralelo
+
+Para objetivos grandes demais para um único agente. Requer LLM real.
+
+```bash
+apathy build "backend FastAPI com auth JWT e frontend React" --workspace ./projeto
+apathy build "..." --dry-run   # mostra plano sem executar
+```
+
+**Fluxo do `build`:**
+1. **Planner** decompõe o objetivo em tarefas JSON com dependências
+2. **TaskGraph** identifica quais tarefas rodam em paralelo
+3. **asyncio.gather** executa todas as tarefas prontas simultaneamente
+4. **Reviewer** verifica cada entrega → retrabalho se necessário (máx. 2 ciclos)
+5. **Integrator** verifica que as partes conversam e gera o resumo final
 
 ### `tools` / `version`
 
 ```bash
-apathy tools     # tabela de todas as ferramentas e se pedem permissão
-apathy version   # versão instalada
+apathy tools     # tabela: 10 ferramentas com policy de permissão
+apathy version   # apathy 0.1.0
 ```
+
+---
+
+## Ferramentas (10 disponíveis)
+
+| Ferramenta    | O que faz                                              | Permissão |
+|---------------|--------------------------------------------------------|:---------:|
+| `read_file`   | Lê arquivo com offset/limit e numeração de linhas      | auto      |
+| `list_dir`    | Lista diretório (tamanhos, tipos)                      | auto      |
+| `grep`        | Busca regex em arquivos (via ripgrep)                  | auto      |
+| `glob`        | Encontra arquivos por padrão glob                      | auto      |
+| `web_fetch`   | Busca URL, extrai texto limpo (remove HTML/scripts)    | auto      |
+| `write_file`  | Cria ou sobrescreve arquivo (cria diretórios pai)      | **ask**   |
+| `edit_file`   | Substituição exata e única em arquivo existente        | **ask**   |
+| `bash`        | Executa comando shell com timeout                      | **ask**   |
+| `http_request`| HTTP com método, headers e body arbitrários            | **ask**   |
+| `task`        | Delega subtarefa a um subagente em contexto isolado    | auto      |
 
 ---
 
 ## Personas
 
-Um agente é completamente definido em YAML — sem código Python.
+Cada agente é definido inteiramente em YAML.
 
 ```yaml
-# personas/researcher.yaml
+# personas/demo.yaml — agente offline para demos e CI
+name: demo
+system_prompt: "Agente de demonstração offline."
+provider: "mock/demo"
+enabled_tools: [read_file, write_file, list_dir, bash, grep, task]
+max_iterations: 30
+temperature: 0.0
+```
+
+```yaml
+# personas/researcher.yaml — pesquisador sem permissão de escrita
 name: researcher
 system_prompt: |
-  Você é um pesquisador cuidadoso. Investiga tópicos usando web e arquivos locais.
+  Você é um pesquisador cuidadoso. Investiga usando web e arquivos locais.
   Nunca modifica arquivos nem executa código. Sempre cita as fontes.
 provider: "anthropic/claude-sonnet-4-6"
 enabled_tools: [read_file, list_dir, grep, glob, web_fetch, http_request]
@@ -250,168 +330,130 @@ max_iterations: 15
 temperature: 0.1
 ```
 
-**Trocar de modelo é uma linha:**
-
-```yaml
-provider: "openai/gpt-4o"          # OpenAI
-provider: "ollama/llama3.2"         # local via Ollama
-provider: "groq/llama-3.3-70b"     # Groq (ultra-rápido)
-provider: "mistral/mistral-large"   # Mistral
-```
-
-### Personas de papel — usadas pelo `build`
+### Personas de papel (usadas pelo `build`)
 
 ```
 personas/roles/
 ├── planner.yaml      # decompõe o objetivo em JSON de tarefas
 ├── backend.yaml      # APIs, banco de dados, lógica de servidor
-├── frontend.yaml     # UI, HTML/CSS/JS, React/Vue
+├── frontend.yaml     # UI, HTML/CSS/JS
 ├── infra.yaml        # Dockerfile, CI/CD, scripts de deploy
-├── reviewer.yaml     # revisa entregas → {"ok": bool, "feedback": "..."}
-└── integrator.yaml   # verifica integração, testa, escreve resumo final
+├── reviewer.yaml     # verifica entregas → {"ok": bool, "feedback": "..."}
+└── integrator.yaml   # integração final, testa o sistema, escreve resumo
 ```
-
-Cada papel pode usar um modelo diferente — ex: planner num modelo forte de raciocínio, implementadores num modelo mais rápido e barato.
-
----
-
-## Ferramentas
-
-| Ferramenta    | O que faz                                              | Pede permissão? |
-|---------------|--------------------------------------------------------|:---------------:|
-| `read_file`   | Lê arquivo com offset/limit e numeração de linhas      | Não             |
-| `list_dir`    | Lista um diretório                                     | Não             |
-| `grep`        | Busca regex via ripgrep com filtro por extensão        | Não             |
-| `glob`        | Encontra arquivos por padrão glob                      | Não             |
-| `web_fetch`   | Busca URL e extrai texto limpo (remove HTML/scripts)   | Não             |
-| `write_file`  | Cria ou sobrescreve arquivo (cria diretórios pai)      | **Sim**         |
-| `edit_file`   | Substituição exata e única em arquivo existente        | **Sim**         |
-| `bash`        | Executa comando shell (asyncio, timeout configurável)  | **Sim**         |
-| `http_request`| HTTP com método, headers e body arbitrários            | **Sim**         |
-| `task`        | Delega subtarefa a um subagente especialista isolado   | Não             |
 
 ---
 
 ## Arquitetura
 
 ```
-src/agent_framework/
-├── core/
-│   ├── agent.py         # Agent.run_turn() — async generator de eventos
-│   ├── provider.py      # ModelProvider: litellm + reparo de JSON malformado
-│   ├── mock_provider.py # MockProvider: provider offline (sem API key) para demo/CI
-│   ├── orchestrator.py  # Orchestrator.spawn_subagent() — contexto isolado
-│   ├── project.py       # TaskGraph + ProjectCrew — execução paralela
-│   ├── permissions.py   # PermissionGate: allow / deny / ask por ferramenta
-│   ├── persona.py       # Persona: Pydantic + carregamento de YAML
-│   ├── session.py       # Session: histórico imutável da conversa
-│   ├── messages.py      # Message / ToolCall / ToolResult (agnóstico de provedor)
-│   └── tool.py          # Tool (Protocol) + ToolRegistry + ToolContext
-├── tools/               # 10 ferramentas prontas para uso
-├── interfaces/
-│   ├── cli/             # Typer + Rich: chat REPL + build command
-│   ├── discord/         # stub
-│   ├── slack/           # stub
-│   └── telegram/        # stub
-├── mcp_server/          # stub — expõe tools via MCP
-├── mcp_client/          # stub — consome servidores MCP externos
-└── config/              # pydantic-settings + .env
-```
-
-### O loop do agente
-
-```
-Entrada do usuário
-      │
-      ▼
- Agent.run_turn()                ← async generator; as interfaces consomem os eventos
-      │
-      ├──► provider.complete()  ──► LLM (qualquer via litellm)
-      │           │
-      │           ▼
-      │     stop_reason == "end_turn"  ──► TurnCompleteEvent → encerra
-      │     stop_reason == "tool_calls"
-      │           │
-      │           ▼
-      │     para cada ToolCall (sequencialmente):
-      │       ├── PermissionGate.check()
-      │       │     allow → tool.run()    ──► resultado real
-      │       │     deny  → ToolResult(is_error=True, "Permission denied")
-      │       │     ask   → ask_callback() → allow ou deny
-      │       └── ToolResultEvent
-      │
-      └──► loop (até persona.max_iterations)
+agent-framework/
+├── pyproject.toml                   # apathy 0.1.0, entry: apathy = "...cli.app:main"
+├── personas/                        # YAMLs: demo, default, researcher, roles/
+├── assets/apathy-icon.svg           # máscara dark com mira — identidade visual
+├── examples/
+│   ├── run_tasks.sh                 # 5 tarefas offline: write/read/bash/grep/delegate
+│   └── build_fastapi_project.sh     # cria projeto FastAPI completo offline (9 arquivos)
+└── src/agent_framework/
+    ├── core/
+    │   ├── agent.py                 # Agent.run_turn() — async generator de eventos
+    │   ├── provider.py              # ModelProvider: litellm + reparo de JSON
+    │   ├── mock_provider.py         # MockProvider: heurístico offline determinístico
+    │   ├── content_generator.py     # templates para 14+ tipos de arquivo
+    │   ├── orchestrator.py          # spawn_subagent() + subagent_event_hook
+    │   ├── project.py               # TaskGraph + ProjectCrew — DAG paralelo
+    │   ├── permissions.py           # PermissionGate: auto / ask / deny
+    │   ├── persona.py               # Persona: Pydantic + YAML loader
+    │   ├── session.py               # Session: histórico imutável da conversa
+    │   ├── messages.py              # Message / ToolCall / ToolResult
+    │   └── tool.py                  # Tool (Protocol) + ToolRegistry + ToolContext
+    ├── tools/
+    │   ├── files.py                 # read_file, write_file, edit_file, list_dir
+    │   ├── search.py                # grep, glob
+    │   ├── shell.py                 # bash
+    │   ├── web.py                   # web_fetch, http_request
+    │   └── task.py                  # task (delega ao Orchestrator)
+    ├── interfaces/
+    │   ├── cli/                     # Typer + Rich: chat, build, run, demo, tools
+    │   ├── discord/                 # stub
+    │   ├── slack/                   # stub
+    │   └── telegram/                # stub
+    ├── mcp_server/                  # stub — expõe tools via MCP (FastMCP)
+    └── mcp_client/                  # stub — consome servidores MCP externos
 ```
 
 ---
 
-## Testes
+## Estado dos testes
 
 ```bash
-uv run pytest            # 136 testes sem chamadas de API (provider fake)
-uv run ruff check .      # lint
+uv run pytest            # 175 testes, 0 chamadas de rede
+uv run ruff check .      # All checks passed
 ```
 
-Cobertura: serialização de mensagens, reparo de JSON, todas as decisões do `PermissionGate`, loop de agente (negação, erro de ferramenta, max_iterations, múltiplos tool calls simultâneos), spawn de subagentes, DAG de tarefas, execução paralela, ciclo de revisão/retrabalho, todas as 10 ferramentas concretas, pipeline end-to-end.
+| Módulo de teste | O que cobre |
+|----------------|-------------|
+| `test_messages` | Serialização Message/ToolCall/ToolResult, round-trip |
+| `test_provider` | Reparo de JSON, normalização de tool-calling |
+| `test_permissions` | Todos os modos: auto, ask, deny, overrides por ferramenta |
+| `test_agent` | Loop: negação, erro de ferramenta, max_iterations, múltiplas calls |
+| `test_mock_provider` | Seleção heurística de ferramenta, sumarização, end-to-end offline |
+| `test_content_generator` | 20 casos: todos os tipos de arquivo, detecção de tópico, substituição |
+| `test_subagent_delegation` | Detecção de delegação, loop pai→filho, subagent_event_hook |
+| `test_task` | TaskTool: spawn, resultado, erro |
+| `test_project` | TaskGraph DAG, execução paralela, ciclo reviewer, integrator |
+| `test_tools_*` | Todas as 10 ferramentas concretas |
+| `test_run_once` | Pipeline CLI: single-shot, auto-approve |
 
 ---
 
-## Roadmap e melhorias planejadas
+## Roadmap
 
-### Já entregue
+### ✅ Entregue (v0.1)
 
-- [x] **Provider offline (`MockProvider`)** — o framework roda de ponta a ponta sem nenhuma API key, mapeando pedidos para chamadas de ferramenta reais; base para demos, smoke tests e CI
-- [x] **Comando `apathy demo`** — sequência scriptada que prova o loop completo (write → read → list → bash → grep) num workspace temporário
-- [x] **Comando `apathy run "<tarefa>"`** — execução single-shot, não-interativa e scriptável de uma tarefa (offline ou com LLM real)
-- [x] **Delegação a subagente offline** — o agente delega via ferramenta `task`; o orquestrador transmite os eventos do subagente para que a atividade dele seja visível em tempo real no terminal
-- [x] **Comandos `apathy tools` e `apathy version`** — introspecção do toolkit e da versão
-- [x] **Ícone e banner** — máscara com mira (`assets/apathy-icon.svg` + banner ASCII no terminal)
+- [x] Loop de agente com gate de permissão (auto / ask / deny)
+- [x] 10 ferramentas: read, write, edit, list, grep, glob, bash, web_fetch, http_request, task
+- [x] Provider offline `MockProvider` — funciona sem API key
+- [x] `ContentGenerator` — gera código real para 14+ tipos de arquivo
+- [x] Subagentes com contexto isolado e streaming de eventos em tempo real
+- [x] CLI completa: `chat`, `run`, `build`, `demo`, `tools`, `version`
+- [x] `ProjectCrew` com DAG paralelo, reviewer, integrator
+- [x] Personas em YAML: troca de modelo sem código
+- [x] 175 testes, ruff limpo
 
-### Em andamento
+### 🔧 Em andamento
 
-- [ ] **MCP Server** — expor o `ToolRegistry` como servidor MCP via FastMCP (stdio + HTTP), permitindo que VS Code, Cursor e Claude Desktop usem as ferramentas do apathy nativamente sem extensão customizada
-- [ ] **MCP Client** — consumir servidores MCP externos como ferramentas locais, expandindo o toolkit sem escrever código
+- [ ] **`apathy create <tipo>`** — comando único que cria um projeto completo autonomamente (FastAPI, CLI, webapp, data) com o `MockProvider` guiando o agente por todas as etapas automaticamente
+- [ ] **MCP Server** — expor o `ToolRegistry` via FastMCP para VS Code/Cursor/Claude Desktop
+- [ ] **MCP Client** — consumir servidores MCP externos como ferramentas locais
 
-### Próxima versão (v0.2)
+### 📅 v0.2
 
-- [ ] **Streaming de respostas** — fazer `Agent.run_turn()` emitir tokens conforme chegam em vez de esperar a resposta completa; necessário para UX responsiva no chat e para modelos com respostas longas
-- [ ] **Memória persistente** — `Session` atual é efêmera; adicionar backend opcional (SQLite, JSON, Redis) para agentes que lembram de conversas anteriores e de artefatos já criados
-- [ ] **Ferramenta de busca na web** — integrar DuckDuckGo/Brave/Serper como `WebSearchTool` com parsing de resultados, complementando o `web_fetch` que já existe
-- [ ] **Execução paralela de tool calls** — quando o modelo retorna múltiplas tool calls numa resposta, executá-las com `asyncio.gather` em vez de sequencialmente (requer cuidado com dependências implícitas entre calls)
+- [ ] **Streaming de tokens** — emitir tokens conforme chegam em vez de esperar a resposta completa
+- [ ] **Memória persistente** — backend SQLite/JSON para sessões que lembram de conversas anteriores
+- [ ] **Web search** — DuckDuckGo/Brave/Serper como `WebSearchTool`
+- [ ] **Tool calls paralelas** — executar múltiplas calls da mesma resposta com `asyncio.gather`
+- [ ] **Retry com backoff** — retentar automaticamente erros de rate limit
 
-### v0.3 — Integrações de chat
+### 📅 v0.3 — Bots de chat
 
-- [ ] **Discord** — adaptador fino: evento de mensagem do bot → `Agent.run_turn()`, thread do Discord → `Session`; cada canal pode ter persona diferente
-- [ ] **Telegram** — mesmo padrão; bot token, sem processo de aprovação para uso privado
-- [ ] **Slack** — Socket Mode para evitar servidor público; OAuth scopes mínimos
+- [ ] **Discord** — evento de mensagem → `Agent.run_turn()`, thread → `Session`
+- [ ] **Telegram** — mesmo padrão, sem processo de aprovação para uso privado
+- [ ] **Slack** — Socket Mode, OAuth scopes mínimos
 
-### v0.4 — Observabilidade e controle
+### 📅 v0.4 — Observabilidade
 
-- [ ] **Traces estruturados** — emitir spans OpenTelemetry a partir dos eventos do loop; ver quanto tempo cada tool call levou, qual modelo foi chamado, quantos tokens consumiu
-- [ ] **Modo dry-run global** — flag `--dry-run` que registra todas as intenções de ferramenta sem executar nenhuma; útil para auditar o que um agente faria antes de deixar rodar
-- [ ] **Limite de custo** — interromper o loop quando o custo estimado (tokens × preço do modelo) ultrapassar um threshold configurável na persona
-- [ ] **Dashboard de sessão** — view Rich ao vivo mostrando mensagens, tool calls e resultados de forma compacta durante execuções longas
+- [ ] **OpenTelemetry spans** — tempo por tool call, modelo chamado, tokens consumidos
+- [ ] **Dry-run global** — registra intenções sem executar
+- [ ] **Limite de custo** — interromper quando custo estimado ultrapassar threshold
+- [ ] **Validação de schema** — validar argumentos contra `input_schema` antes de chamar a ferramenta
 
-### v0.5 — ProjectCrew avançado
+### 📅 v0.5 — ProjectCrew avançado
 
-- [ ] **Comunicação entre agentes** — canal de mensagens opcional para que subagentes possam consultar uns aos outros durante a execução (ex: frontend pergunta ao backend qual é o contrato da API)
-- [ ] **Checkpoint e retomada** — salvar o estado do `TaskGraph` em disco; se o `build` falhar na metade, poder retomar do ponto onde parou sem refazer tarefas já concluídas
-- [ ] **Workspace sandboxado por tarefa** — cada agente escreve apenas no próprio subdiretório (`workspace/<task_id>/`), merge feito pelo integrator; reduz conflitos em builds paralelos grandes
-- [ ] **Tarefas dinâmicas** — permitir que agentes durante a execução adicionem novas tarefas ao DAG (ex: backend descobre que precisa de uma tarefa de migrations não prevista pelo planner)
-
-### Melhorias de qualidade
-
-- [ ] **Hardening com modelos locais** — testar e ajustar o parser de tool-calling com Ollama (Llama 3, Qwen, Mistral) e registrar quirks conhecidos por modelo; possível fallback para formato ReAct quando function-calling não está disponível
-- [ ] **Validação de schema de ferramentas** — validar os argumentos contra o `input_schema` antes de chamar `tool.run()`, retornando erro descritivo em vez de stack trace quando o modelo passa tipos errados
-- [ ] **Retry com backoff** — retentar automaticamente chamadas de API que falham por rate limit ou erro temporário, com backoff exponencial e limite de tentativas configurável
-- [ ] **Compressão de contexto** — quando a sessão cresce demais, sumarizar as mensagens mais antigas para caber no context window sem perder o fio da conversa
-
-### Ideias em exploração
-
-- [ ] **Interface de voz** — transcrição (Whisper) → `Agent.run_turn()` → TTS; permitir conversar com o agente por áudio
-- [ ] **Computer use** — capturar screenshot, enviar para modelo com capacidade de visão, executar cliques/teclas via ferramenta; permitir agentes que operam interfaces gráficas
-- [ ] **Plugin system** — carregar ferramentas de pacotes externos via entry points, sem modificar o core; `apathy plugins list/install`
-- [ ] **API server mode** — wrapper FastAPI que expõe `Agent.run_turn()` como endpoint HTTP/SSE, transformando qualquer persona em microserviço de agente
+- [ ] **Checkpoint e retomada** — salvar estado do `TaskGraph`; retomar build do ponto onde parou
+- [ ] **Workspace sandboxado por tarefa** — cada agente escreve no próprio subdiretório
+- [ ] **Tarefas dinâmicas** — agentes podem adicionar novas tarefas ao DAG durante a execução
+- [ ] **Comunicação entre agentes** — canal de mensagens entre subagentes
 
 ---
 
