@@ -1,10 +1,17 @@
-# apathy
+<p align="center">
+  <img src="assets/apathy-icon.svg" width="120" alt="apathy mask icon"/>
+</p>
 
-**Framework Python para agentes de IA autônomos com execução multi-agente paralela.**
+<h1 align="center">apathy</h1>
+
+<p align="center"><b>Framework Python para agentes de IA autônomos com execução multi-agente paralela.</b></p>
 
 Apathy não tem opinião sobre qual LLM você usa, como você organiza suas ferramentas ou onde roda seus agentes. Ele se preocupa com uma coisa: pegar seu objetivo e executar — silenciosamente, eficientemente, em paralelo quando possível.
 
 ```bash
+# Veja o agente funcionando AGORA — sem nenhuma API key
+apathy demo
+
 # Conversa com um agente que usa ferramentas de verdade
 apathy chat --persona personas/default.yaml
 
@@ -20,8 +27,10 @@ apathy build "API REST com FastAPI e frontend em HTML/JS" --workspace ./output
 - [Instalação](#instalação)
 - [Início rápido](#início-rápido)
 - [Comandos](#comandos)
+  - [demo — prova offline sem API key](#demo--prova-offline-sem-api-key)
   - [chat — agente conversacional](#chat--agente-conversacional)
   - [build — time de agentes em paralelo](#build--time-de-agentes-em-paralelo)
+  - [tools / version](#tools--version)
 - [Personas](#personas)
 - [Ferramentas](#ferramentas)
 - [Arquitetura](#arquitetura)
@@ -67,22 +76,53 @@ OLLAMA_API_BASE=http://localhost:11434
 
 ## Início rápido
 
+A forma mais rápida de ver tudo funcionando — **sem precisar de nenhuma chave de API**:
+
 ```bash
-# Agente conversacional com ferramentas de arquivo e shell
+apathy demo
+```
+
+O comando `demo` usa um provider offline scriptado que mapeia pedidos para chamadas de ferramenta reais. Ele cria um workspace temporário e roda o loop completo do agente — escreve um arquivo, lê de volta, lista o diretório, executa um comando shell e faz um grep — tudo de verdade, provando que o pipeline funciona de ponta a ponta.
+
+Outros comandos úteis sem API key:
+
+```bash
+apathy tools      # lista as ferramentas disponíveis e quais pedem permissão
+apathy version    # versão instalada
+```
+
+Com uma chave de API configurada no `.env`:
+
+```bash
+# Agente conversacional — lê arquivos de verdade, não alucina o conteúdo
 apathy chat
 
-# O agente lê arquivos de verdade, não alucina o conteúdo:
-# you › leia o pyproject.toml e me diga o nome do projeto
-#   ✓ read_file — [project]\nname = "apathy"...
-# O projeto se chama "apathy", versão 0.1.0.
-
-# Time de agentes construindo um projeto (requer API key)
+# Time de agentes construindo um projeto inteiro
 apathy build "uma CLI de lista de tarefas em Python com SQLite" --workspace ./todo-cli
 ```
 
 ---
 
 ## Comandos
+
+### `demo` — prova offline sem API key
+
+Roda uma sequência scriptada que exercita o loop completo do agente usando o `MockProvider` (um provider offline determinístico, não um LLM). Útil para validar a instalação, fazer smoke test em CI e entender o fluxo sem gastar tokens.
+
+```bash
+apathy demo
+```
+
+```
+─── passo 1  ›  escreva o arquivo hello.txt ───
+  Tool: write_file  {'path': 'hello.txt', ...}
+  ✓ Allowed: write_file
+  ✓ write_file: Wrote 24 characters to .../hello.txt
+─── passo 4  ›  rode: echo apathy-esta-vivo ───
+  Tool: bash  {'command': 'echo apathy-esta-vivo'}
+  ✓ bash: apathy-esta-vivo
+✓ Demo concluída — o loop de ferramentas funcionou de ponta a ponta.
+```
 
 ### `chat` — agente conversacional
 
@@ -114,6 +154,8 @@ apathy build "..." --dry-run   # mostra o plano sem executar
 4. Reviewer verifica cada entrega; se falhar → retrabalho (máx. 2 ciclos)
 5. Integrator verifica que as partes funcionam juntas e escreve o resumo final
 ```
+
+> **Sem chave de API**, o `build` ainda planeja, mas o planner não consegue gerar tarefas — ele falha graciosamente com uma mensagem clara. O `build` precisa de um LLM real; o `demo` é a alternativa 100% offline.
 
 Progresso em tempo real no terminal:
 
@@ -148,6 +190,13 @@ Progresso em tempo real no terminal:
 │  • docker-compose.yml                            │
 │ Para rodar: docker compose up                    │
 ╰──────────────────────────────────────────────────╯
+```
+
+### `tools` / `version`
+
+```bash
+apathy tools     # tabela de todas as ferramentas e se pedem permissão
+apathy version   # versão instalada
 ```
 
 ---
@@ -220,6 +269,7 @@ src/agent_framework/
 ├── core/
 │   ├── agent.py         # Agent.run_turn() — async generator de eventos
 │   ├── provider.py      # ModelProvider: litellm + reparo de JSON malformado
+│   ├── mock_provider.py # MockProvider: provider offline (sem API key) para demo/CI
 │   ├── orchestrator.py  # Orchestrator.spawn_subagent() — contexto isolado
 │   ├── project.py       # TaskGraph + ProjectCrew — execução paralela
 │   ├── permissions.py   # PermissionGate: allow / deny / ask por ferramenta
@@ -277,6 +327,13 @@ Cobertura: serialização de mensagens, reparo de JSON, todas as decisões do `P
 ---
 
 ## Roadmap e melhorias planejadas
+
+### Já entregue
+
+- [x] **Provider offline (`MockProvider`)** — o framework roda de ponta a ponta sem nenhuma API key, mapeando pedidos para chamadas de ferramenta reais; base para demos, smoke tests e CI
+- [x] **Comando `apathy demo`** — sequência scriptada que prova o loop completo (write → read → list → bash → grep) num workspace temporário
+- [x] **Comandos `apathy tools` e `apathy version`** — introspecção do toolkit e da versão
+- [x] **Ícone e banner** — máscara com mira (`assets/apathy-icon.svg` + banner ASCII no terminal)
 
 ### Em andamento
 

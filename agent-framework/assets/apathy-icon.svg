@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="apathy mask icon">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#1b1d22"/>
+      <stop offset="100%" stop-color="#050506"/>
+    </radialGradient>
+    <linearGradient id="glitch" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff2d55"/>
+      <stop offset="50%" stop-color="#e8e8ee"/>
+      <stop offset="100%" stop-color="#2de2ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="256" height="256" rx="36" fill="url(#bg)"/>
+
+  <!-- mask dome -->
+  <path d="M128 36
+           C 78 36 52 78 52 124
+           C 52 168 78 196 128 196
+           C 178 196 204 168 204 124
+           C 204 78 178 36 128 36 Z"
+        fill="#ededf2" stroke="url(#glitch)" stroke-width="3"/>
+
+  <!-- glitch chromatic offsets on the dome edge -->
+  <path d="M128 36 C 78 36 52 78 52 124" fill="none" stroke="#ff2d55" stroke-width="2" opacity="0.6" transform="translate(-3,0)"/>
+  <path d="M128 36 C 178 36 204 78 204 124" fill="none" stroke="#2de2ff" stroke-width="2" opacity="0.6" transform="translate(3,0)"/>
+
+  <!-- crosshair eye -->
+  <g transform="translate(128,118)">
+    <ellipse cx="0" cy="0" rx="34" ry="22" fill="#0a0a0c"/>
+    <circle cx="0" cy="0" r="18" fill="none" stroke="url(#glitch)" stroke-width="3"/>
+    <line x1="-30" y1="0" x2="30" y2="0" stroke="url(#glitch)" stroke-width="3"/>
+    <line x1="0" y1="-20" x2="0" y2="20" stroke="url(#glitch)" stroke-width="3"/>
+  </g>
+
+  <!-- stitched mouth -->
+  <g stroke="#0a0a0c" stroke-width="3">
+    <line x1="92" y1="168" x2="164" y2="168"/>
+    <line x1="100" y1="160" x2="100" y2="176"/>
+    <line x1="114" y1="160" x2="114" y2="176"/>
+    <line x1="128" y1="160" x2="128" y2="176"/>
+    <line x1="142" y1="160" x2="142" y2="176"/>
+    <line x1="156" y1="160" x2="156" y2="176"/>
+  </g>
+</svg>

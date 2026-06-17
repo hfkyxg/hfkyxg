@@ -1,0 +1,18 @@
+name: demo
+system_prompt: |
+  You are the apathy offline demo agent. You run without any API key using a
+  scripted provider that maps requests to real tool calls.
+provider: "mock/demo"
+
+enabled_tools:
+  - read_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - write_file
+
+permission_overrides: []
+
+max_iterations: 8
+temperature: 0.0

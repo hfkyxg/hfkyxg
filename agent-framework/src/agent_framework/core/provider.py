@@ -164,6 +164,11 @@ class ModelProvider:
 
     @classmethod
     def from_persona(cls, persona: Persona) -> ModelProvider:
+        # Offline demo / test provider — no API key required.
+        if persona.provider.startswith(("mock/", "demo/")):
+            from agent_framework.core.mock_provider import MockProvider
+
+            return MockProvider(model=persona.provider, temperature=persona.temperature)
         api_base: str | None = None
         if "ollama/" in persona.provider:
             api_base = settings.ollama_api_base
