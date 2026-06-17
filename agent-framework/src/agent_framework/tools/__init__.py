@@ -1,4 +1,5 @@
 from agent_framework.core.tool import ToolRegistry
+from agent_framework.tools.cloud_sync import CloudSyncTool
 from agent_framework.tools.database import DatabaseTool
 from agent_framework.tools.email_send import EmailSendTool
 from agent_framework.tools.files import EditFileTool, ListDirTool, ReadFileTool, WriteFileTool
@@ -34,6 +35,7 @@ def register_builtin_tools(
         DatabaseTool(),
         FileOrganizeTool(),
         EmailSendTool(),
+        CloudSyncTool(),
         TaskTool(personas=task_personas or {}),
     ]
     for tool in all_tools:

@@ -2,13 +2,24 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from agent_framework.core.errors import ToolError
+from agent_framework.core.safety import is_protected_path
 from agent_framework.core.tool import ToolContext
+
+# Media categories used by the "by_media" mode (one folder per file).
+_MEDIA_CATEGORIES = frozenset({"videos", "audio", "images"})
+
+
+def _sanitize_folder_name(name: str) -> str:
+    """Make a filesystem-safe folder name from a file stem."""
+    cleaned = re.sub(r'[<>:"/\\|?*]', "_", name).strip().rstrip(".")
+    return cleaned or "untitled"
 
 CATEGORIES: dict[str, list[str]] = {
     "code": [".py", ".js", ".ts", ".jsx", ".tsx", ".go", ".rs", ".java", ".cpp",
@@ -65,12 +76,14 @@ class FileOrganizeTool:
             },
             "mode": {
                 "type": "string",
-                "enum": ["by_type", "by_date", "by_size"],
+                "enum": ["by_type", "by_date", "by_size", "by_media"],
                 "default": "by_type",
                 "description": (
                     "by_type: group by file category (code/docs/images/...); "
                     "by_date: group by year-month (YYYY-MM/); "
-                    "by_size: group by size (large/>1MB, medium/100KB-1MB, small/<100KB)"
+                    "by_size: group by size (large/>1MB, medium/100KB-1MB, small/<100KB); "
+                    "by_media: one folder per video/audio/image, pulling in same-name "
+                    "siblings (subtitles, thumbnails) — organizes 'video by video'"
                 ),
             },
             "dry_run": {
@@ -98,6 +111,13 @@ class FileOrganizeTool:
         if not root.is_dir():
             raise ToolError(self.name, f"Not a directory: {root}")
 
+        # Discernment: never reorganize protected system locations.
+        if is_protected_path(root):
+            raise ToolError(
+                self.name,
+                f"Refusing to organize protected system location: {root}",
+            )
+
         files = [
             f for f in root.rglob("*")
             if f.is_file()
@@ -108,6 +128,13 @@ class FileOrganizeTool:
 
         if not files:
             return f"No files found in {root} (skipped hidden files and build dirs)."
+
+        # For by_media, work out which file stems are "media" so siblings join them.
+        media_stems: set[str] = set()
+        if mode == "by_media":
+            for f in files:
+                if _categorize(f) in _MEDIA_CATEGORIES:
+                    media_stems.add(f.stem.lower())
 
         moves: list[dict[str, str]] = []
         skipped: list[str] = []
@@ -129,6 +156,13 @@ class FileOrganizeTool:
             elif mode == "by_date":
                 mtime = datetime.fromtimestamp(src.stat().st_mtime)
                 dest_dir = root / mtime.strftime("%Y-%m")
+            elif mode == "by_media":
+                # One folder per media file; same-stem siblings (e.g. .srt, .jpg)
+                # join that folder. Files unrelated to any media are left in place.
+                if src.stem.lower() not in media_stems:
+                    skipped.append(str(rel))
+                    continue
+                dest_dir = root / _sanitize_folder_name(src.stem)
             else:  # by_size
                 size = src.stat().st_size
                 if size > 1_000_000:

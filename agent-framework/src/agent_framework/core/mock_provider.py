@@ -307,11 +307,31 @@ class MockProvider(ModelProvider):
             pattern = m.group(1) if m else "TODO"
             return call("grep", {"pattern": pattern, "path": "."})
 
+        # cloud upload / backup (checked before generic organize)
+        _cloud_kw = ("nuvem", "cloud", "drive", "rclone", "google drive",
+                     "onedrive", "dropbox", "backup", "faça upload", "envie para")
+        if any(k in lower for k in _cloud_kw) and "cloud_sync" in available:
+            # remote looks like "name:path"
+            rm = re.search(r"\b([a-zA-Z0-9_\-]+:[\w./\- ]+)", text)
+            remote = rm.group(1).strip() if rm else ""
+            src = _extract_path(text, ".")
+            cloud_action = "copy"
+            if any(k in lower for k in ("mova", "mover", "move ")):
+                cloud_action = "move"
+            if remote:
+                return call(
+                    "cloud_sync",
+                    {"action": cloud_action, "source": src, "dest": remote},
+                )
+            return call("cloud_sync", {"action": "remotes"})
+
         # organize files
         if any(k in lower for k in ("organize", "organizar", "ordene", "classifique", "mova os")):
             path = _extract_path(text, ".")
             mode = "by_type"
-            if "data" in lower or "date" in lower or "dia" in lower:
+            if "vídeo" in lower or "video" in lower or "mídia" in lower or "media" in lower:
+                mode = "by_media"
+            elif "data" in lower or "date" in lower or "dia" in lower:
                 mode = "by_date"
             elif "size" in lower or "tamanho" in lower or "grande" in lower:
                 mode = "by_size"

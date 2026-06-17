@@ -219,6 +219,133 @@ def organize(
     console.print(f"\n[bold green]✓[/bold green] {result}")
 
 
+def _run_cloud_tool(args: dict) -> str:
+    """Helper: run CloudSyncTool synchronously with an auto-approve context."""
+    from agent_framework.core.permissions import always_allow
+    from agent_framework.core.session import Session
+    from agent_framework.core.tool import ToolContext
+    from agent_framework.tools.cloud_sync import CloudSyncTool
+
+    tool = CloudSyncTool()
+    ctx = ToolContext(
+        workdir=Path("."),
+        session=Session(),
+        permission_gate=always_allow(),
+    )
+    return asyncio.run(tool.run(args, context=ctx))
+
+
+@app.command()
+def cloud(
+    action: Annotated[
+        str, typer.Argument(help="copy | move | sync | list | remotes")
+    ],
+    source: Annotated[str, typer.Argument(help="Local path or remote:path")] = "",
+    dest: Annotated[str, typer.Argument(help="remote:path (e.g. gdrive:Backup) or local")] = "",
+    dry_run: Annotated[bool, typer.Option("--dry-run", help="Preview only")] = False,
+) -> None:
+    """Upload/move/list files on PRIVATE cloud storage via rclone (Google Drive, etc.)."""
+    from rich.console import Console
+
+    console = Console()
+    try:
+        result = _run_cloud_tool(
+            {"action": action, "source": source, "dest": dest, "dry_run": dry_run}
+        )
+        console.print(f"[bold green]✓[/bold green] {result}")
+    except Exception as exc:
+        console.print(f"[red]✗ {exc}[/red]")
+        raise typer.Exit(1) from exc
+
+
+@app.command(name="backup-videos")
+def backup_videos(
+    folder: Annotated[Path, typer.Argument(help="Local folder containing videos")],
+    remote: Annotated[
+        str, typer.Argument(help="Private cloud destination, e.g. gdrive:VideosBackup")
+    ],
+    keep_local: Annotated[
+        bool, typer.Option("--keep-local", help="Copy instead of move (keep originals)")
+    ] = False,
+    dry_run: Annotated[
+        bool, typer.Option("--dry-run", help="Preview without changing anything")
+    ] = False,
+    yes: Annotated[bool, typer.Option("--yes", "-y", help="Skip confirmation")] = False,
+) -> None:
+    """Organize videos one-folder-each, then upload them to your PRIVATE cloud drive."""
+    from rich.console import Console
+    from rich.panel import Panel
+
+    from agent_framework.core.permissions import always_allow
+    from agent_framework.core.safety import is_protected_path
+    from agent_framework.core.session import Session
+    from agent_framework.core.tool import ToolContext
+    from agent_framework.tools.organize import CATEGORIES, FileOrganizeTool
+
+    console = Console()
+    root = folder.expanduser().resolve()
+
+    if not root.is_dir():
+        console.print(f"[red]Folder not found: {root}[/red]")
+        raise typer.Exit(1)
+    if is_protected_path(root):
+        console.print(f"[red]Refusing to operate on protected system path: {root}[/red]")
+        raise typer.Exit(1)
+
+    video_exts = set(CATEGORIES["videos"])
+    videos = [f for f in root.rglob("*") if f.is_file() and f.suffix.lower() in video_exts]
+    if not videos:
+        console.print(f"[yellow]No video files found in {root}[/yellow]")
+        raise typer.Exit(1)
+
+    action = "copy" if keep_local else "move"
+    console.print(
+        Panel(
+            f"[bold]Backup de vídeos[/bold]\n"
+            f"  Origem : [blue]{root}[/blue]\n"
+            f"  Destino: [green]{remote}[/green] (privado)\n"
+            f"  Vídeos : [cyan]{len(videos)}[/cyan]\n"
+            f"  Modo   : {'copiar (mantém local)' if keep_local else 'mover (remove local)'}\n"
+            f"  Passo 1: organizar vídeo por vídeo (uma pasta cada)\n"
+            f"  Passo 2: rclone {action} → nuvem privada",
+            title="apathy backup-videos",
+            border_style="cyan",
+        )
+    )
+
+    if not dry_run and not yes:
+        if not typer.confirm(f"Continuar com {len(videos)} vídeo(s)?"):
+            console.print("[dim]Cancelado.[/dim]")
+            return
+
+    # Step 1: organize "video by video"
+    console.print("[bold]1/2[/bold] Organizando vídeo por vídeo...")
+    org = FileOrganizeTool()
+    ctx = ToolContext(workdir=root, session=Session(), permission_gate=always_allow())
+    org_result = asyncio.run(
+        org.run(
+            {"path": str(root), "mode": "by_media", "dry_run": dry_run, "write_manifest": True},
+            context=ctx,
+        )
+    )
+    console.print(f"[dim]{org_result}[/dim]")
+
+    # Step 2: upload to private cloud
+    console.print(f"[bold]2/2[/bold] Enviando para nuvem privada ({action})...")
+    try:
+        up = _run_cloud_tool(
+            {"action": action, "source": str(root), "dest": remote, "dry_run": dry_run}
+        )
+        console.print(f"[bold green]✓[/bold green] {up}")
+    except Exception as exc:
+        console.print(f"[red]✗ Upload falhou:[/red] {exc}")
+        console.print(
+            "[dim]Dica: configure sua conta primeiro com [bold]rclone config[/bold], "
+            "depois confira com [bold]apathy cloud remotes[/bold].[/dim]"
+        )
+        raise typer.Exit(1) from exc
+
+
 @app.command(name="parallel-demo")
 def parallel_demo(
     workspace: Annotated[Path, typer.Option("--workspace", "-w")] = Path("/tmp/apathy-parallel"),
