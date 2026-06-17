@@ -97,10 +97,21 @@ class MockProvider(ModelProvider):
             cmd = m.group(1).strip().strip("'\"") if m else "echo hello-from-apathy"
             return call("bash", {"command": cmd})
 
-        # write file
+        # write file — try to extract explicit content after a separator
         if any(k in lower for k in ("escreva", "crie", "write", "salve")):
             path = _extract_path(text, "apathy-demo.txt")
-            return call("write_file", {"path": path, "content": "criado pelo apathy demo\n"})
+            content = "criado pelo apathy demo\n"
+            cm = re.search(
+                r"(?:com\s+conte[uú]do|contendo|content|with\s+content|:)\s+(.+)$",
+                text,
+                re.IGNORECASE | re.DOTALL,
+            )
+            if cm:
+                extracted = cm.group(1).strip().strip("'\"")
+                # don't mistake the filename for content
+                if extracted and extracted != path:
+                    content = extracted + ("\n" if not extracted.endswith("\n") else "")
+            return call("write_file", {"path": path, "content": content})
 
         # read file
         if any(k in lower for k in ("leia", "read", "mostre o arquivo", "conteúdo de")):

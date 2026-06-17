@@ -24,7 +24,7 @@ _WORDMARK = "[bold white]apathy[/bold white] [dim]- autonomous agent framework[/
 
 
 def print_banner(console: Console, subtitle: str | None = None) -> None:
-    console.print(f"[bright_cyan]{_MASK}[/bright_cyan]")
+    console.print(f"[grey50]{_MASK}[/grey50]")
     console.print(f"  {_WORDMARK}")
     if subtitle:
         console.print(f"  [dim]{subtitle}[/dim]")

@@ -28,6 +28,7 @@ apathy build "API REST com FastAPI e frontend em HTML/JS" --workspace ./output
 - [Início rápido](#início-rápido)
 - [Comandos](#comandos)
   - [demo — prova offline sem API key](#demo--prova-offline-sem-api-key)
+  - [run — executar uma tarefa única](#run--executar-uma-tarefa-única-scriptável)
   - [chat — agente conversacional](#chat--agente-conversacional)
   - [build — time de agentes em paralelo](#build--time-de-agentes-em-paralelo)
   - [tools / version](#tools--version)
@@ -192,6 +193,18 @@ Progresso em tempo real no terminal:
 ╰──────────────────────────────────────────────────╯
 ```
 
+### `run` — executar uma tarefa única (scriptável)
+
+Roda uma tarefa em linguagem natural de forma não-interativa e imprime o resultado. Ideal para automação e scripts. Funciona offline (persona `demo`) ou com LLM real.
+
+```bash
+apathy run "leia o pyproject.toml e me diga o nome do projeto"
+apathy run "escreva o arquivo nota.md com conteúdo # Minhas notas" --persona personas/demo.yaml --yes
+apathy run "rode: pytest -q" --yes
+```
+
+`--yes` (`-y`) aprova automaticamente todas as ações (útil em CI/scripts). Veja `examples/run_tasks.sh` para uma demonstração reproduzível de várias tarefas reais.
+
 ### `tools` / `version`
 
 ```bash
@@ -332,6 +345,7 @@ Cobertura: serialização de mensagens, reparo de JSON, todas as decisões do `P
 
 - [x] **Provider offline (`MockProvider`)** — o framework roda de ponta a ponta sem nenhuma API key, mapeando pedidos para chamadas de ferramenta reais; base para demos, smoke tests e CI
 - [x] **Comando `apathy demo`** — sequência scriptada que prova o loop completo (write → read → list → bash → grep) num workspace temporário
+- [x] **Comando `apathy run "<tarefa>"`** — execução single-shot, não-interativa e scriptável de uma tarefa (offline ou com LLM real)
 - [x] **Comandos `apathy tools` e `apathy version`** — introspecção do toolkit e da versão
 - [x] **Ícone e banner** — máscara com mira (`assets/apathy-icon.svg` + banner ASCII no terminal)
 

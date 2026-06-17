@@ -57,6 +57,30 @@ def build(
 
 
 @app.command()
+def run(
+    task: str = typer.Argument(..., help="The task to run, in natural language"),
+    persona: Path = typer.Option(
+        Path("personas/default.yaml"),
+        "--persona",
+        "-p",
+        help="Path to persona YAML file",
+        exists=True,
+    ),
+    workdir: str = typer.Option(
+        ".", "--workdir", "-w", help="Working directory for file/shell tools"
+    ),
+    yes: bool = typer.Option(
+        False, "--yes", "-y", help="Auto-approve all tool actions (non-interactive)"
+    ),
+) -> None:
+    """Run a single task non-interactively and print the result (scriptable)."""
+    from agent_framework.interfaces.cli.run_once import run_once
+
+    p = Persona.from_yaml(persona)
+    asyncio.run(run_once(p, task, workdir, auto_approve=yes))
+
+
+@app.command()
 def demo() -> None:
     """Run a scripted offline demo — proves the full agent loop with NO API key."""
     from agent_framework.interfaces.cli.demo_runner import run_demo
