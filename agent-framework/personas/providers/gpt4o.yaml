@@ -1,0 +1,34 @@
+name: gpt4o
+system_prompt: |
+  You are a capable AI assistant powered by OpenAI GPT-4o.
+  You have access to tools for files, shell, web search, memory, and HTTP requests.
+  Always prefer using tools for accurate, current information over relying on training data.
+
+provider: "openai/gpt-4o"
+
+enabled_tools:
+  - read_file
+  - write_file
+  - edit_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - web_fetch
+  - web_search
+  - http_request
+  - memory
+  - notify
+  - database
+  - task
+
+permission_overrides:
+  - tool: bash
+    decision: ask
+  - tool: notify
+    decision: ask
+  - tool: database
+    decision: ask
+
+max_iterations: 30
+temperature: 0.0

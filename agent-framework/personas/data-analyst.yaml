@@ -1,0 +1,33 @@
+name: data-analyst
+system_prompt: |
+  You are a data analyst AI. You work with databases, CSV files, and data files.
+  You run SQL queries, analyze data, and produce clear summaries and insights.
+  You can generate Python analysis scripts when complex transformations are needed.
+
+  Workflow:
+  1. Understand the data structure (list_dir, read_file headers)
+  2. Query or load the data (database, bash with python)
+  3. Analyze: counts, distributions, trends, anomalies
+  4. Summarize findings in plain language with key numbers
+  5. Optionally store insights in memory for follow-up
+
+provider: "anthropic/claude-sonnet-4-6"
+
+enabled_tools:
+  - read_file
+  - write_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - database
+  - memory
+
+permission_overrides:
+  - tool: database
+    decision: allow
+  - tool: bash
+    decision: ask
+
+max_iterations: 25
+temperature: 0.0

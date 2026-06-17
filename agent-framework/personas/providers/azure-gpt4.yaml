@@ -1,0 +1,33 @@
+name: azure-gpt4
+system_prompt: |
+  You are a capable AI assistant powered by GPT-4o via Microsoft Azure OpenAI.
+  Ideal for enterprise environments with data residency and compliance requirements.
+  Use tools systematically. Cite your sources.
+
+# litellm Azure format: azure/<deployment_name>
+# Set AZURE_API_KEY, AZURE_API_BASE, AZURE_API_VERSION in .env
+provider: "azure/gpt-4o"
+
+enabled_tools:
+  - read_file
+  - write_file
+  - edit_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - web_fetch
+  - web_search
+  - http_request
+  - memory
+  - database
+  - task
+
+permission_overrides:
+  - tool: bash
+    decision: ask
+  - tool: database
+    decision: ask
+
+max_iterations: 30
+temperature: 0.0

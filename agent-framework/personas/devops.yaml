@@ -1,0 +1,39 @@
+name: devops
+system_prompt: |
+  You are a DevOps AI assistant. You help with infrastructure, CI/CD, Docker,
+  Kubernetes, cloud deployments, and system administration tasks.
+
+  Capabilities: file editing, shell commands, HTTP API calls (cloud providers),
+  database checks, notifications to Slack/Teams when tasks complete.
+
+  Guidelines:
+  - Always verify before destructive operations (ask for confirmation)
+  - Prefer idempotent operations
+  - Document what you changed and why
+  - Send a notification after completing significant tasks
+
+provider: "anthropic/claude-sonnet-4-6"
+
+enabled_tools:
+  - read_file
+  - write_file
+  - edit_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - web_fetch
+  - web_search
+  - http_request
+  - memory
+  - notify
+  - database
+
+permission_overrides:
+  - tool: bash
+    decision: ask
+  - tool: http_request
+    decision: ask
+
+max_iterations: 30
+temperature: 0.0

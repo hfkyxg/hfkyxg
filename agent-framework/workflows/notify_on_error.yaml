@@ -1,0 +1,23 @@
+name: notify_on_error
+description: |
+  Watches log files for ERROR patterns and sends a Slack notification
+  when errors are detected.
+
+triggers:
+  - type: watch
+    path: ./logs
+    pattern: "*.log"
+    events: [modified, created]
+
+steps:
+  - name: check_errors
+    persona: demo
+    task: "leia o arquivo {file} e verifique se contém erros"
+    workspace: "."
+  - name: notify
+    persona: demo
+    task: "rode: echo 'Error detected in {file}'"
+    workspace: "."
+
+permission: workspace
+timeout_seconds: 30

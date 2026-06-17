@@ -1,0 +1,28 @@
+name: groq-llama
+system_prompt: |
+  You are a fast AI assistant powered by Meta Llama 3.3 70B running on Groq.
+  Groq delivers extremely fast inference — best for real-time interactive tasks.
+  Use tools to ground your answers with real data.
+
+# Groq free tier: ~14,400 tokens/min for llama-3.3-70b-versatile
+provider: "groq/llama-3.3-70b-versatile"
+
+enabled_tools:
+  - read_file
+  - write_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - web_fetch
+  - web_search
+  - memory
+  - http_request
+  - task
+
+permission_overrides:
+  - tool: bash
+    decision: ask
+
+max_iterations: 25
+temperature: 0.0

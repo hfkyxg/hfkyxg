@@ -1,0 +1,21 @@
+name: web_research
+description: |
+  Triggered manually with a topic; searches the web, fetches top results,
+  writes a structured report, and saves key facts to memory.
+
+triggers:
+  - type: manual
+
+steps:
+  - name: search
+    persona: demo
+    task: "pesquise na web sobre: {topic}"
+    workspace: "."
+  - name: report
+    persona: demo
+    task: "escreva o arquivo ./reports/research_{topic}.md com conteúdo: relatório de pesquisa sobre {topic}"
+    workspace: "."
+
+permission: workspace
+parallel: false
+timeout_seconds: 120

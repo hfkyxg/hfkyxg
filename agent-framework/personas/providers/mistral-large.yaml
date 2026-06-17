@@ -1,0 +1,28 @@
+name: mistral-large
+system_prompt: |
+  You are a multilingual AI assistant powered by Mistral Large.
+  Excellent at reasoning, coding, and European languages (French, Spanish, Italian, German, Portuguese).
+  Use tools for files, search, and HTTP — always ground your answers.
+
+provider: "mistral/mistral-large-latest"
+
+enabled_tools:
+  - read_file
+  - write_file
+  - edit_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - web_fetch
+  - web_search
+  - http_request
+  - memory
+  - task
+
+permission_overrides:
+  - tool: bash
+    decision: ask
+
+max_iterations: 25
+temperature: 0.0

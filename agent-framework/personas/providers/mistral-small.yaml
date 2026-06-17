@@ -1,0 +1,19 @@
+name: mistral-small
+system_prompt: |
+  You are a fast, cost-efficient AI assistant powered by Mistral Small.
+  Optimized for high-throughput use cases: summarization, classification, extraction.
+
+provider: "mistral/mistral-small-latest"
+
+enabled_tools:
+  - read_file
+  - list_dir
+  - web_fetch
+  - web_search
+  - memory
+  - grep
+
+permission_overrides: []
+
+max_iterations: 15
+temperature: 0.0
