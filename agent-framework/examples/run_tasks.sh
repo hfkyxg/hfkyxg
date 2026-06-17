@@ -21,4 +21,8 @@ uv run apathy run "rode: echo apathy executed this" --persona "$PERSONA" --yes
 echo "== task 4: search the project =="
 uv run apathy run "busque MockProvider src" --persona "$PERSONA" --yes
 
+echo "== task 5: delegate to a subagent (watch it spawn and work) =="
+uv run apathy run "delegue ao subagente: escreva o arquivo $WORK/sub.txt com conteúdo feito-pelo-subagente" \
+  --persona "$PERSONA" --yes
+
 echo "done. artifacts in: $WORK"

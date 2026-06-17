@@ -205,6 +205,23 @@ apathy run "rode: pytest -q" --yes
 
 `--yes` (`-y`) aprova automaticamente todas as ações (útil em CI/scripts). Veja `examples/run_tasks.sh` para uma demonstração reproduzível de várias tarefas reais.
 
+**Delegação a subagente** — peça para o agente delegar e ele spawna um subagente isolado, cuja atividade você vê em tempo real (indentada):
+
+```bash
+apathy run "delegue ao subagente: escreva o arquivo nota.txt com conteúdo olá" \
+  --persona personas/demo.yaml --yes
+```
+
+```
+  Tool: task  {'prompt': 'escreva o arquivo nota.txt com conteúdo olá', ...}
+  ✓ Allowed: task
+    └─ subagente:demo usa write_file {'path': 'nota.txt', 'content': 'olá\n'}
+    └─ subagente:demo ✓ Wrote 4 characters to nota.txt
+  ✓ task: ...
+```
+
+O subagente roda em sessão própria, com toolset filtrado, e devolve só o resultado final ao agente pai — exatamente o padrão de orquestração que o `build` usa em escala.
+
 ### `tools` / `version`
 
 ```bash
@@ -346,6 +363,7 @@ Cobertura: serialização de mensagens, reparo de JSON, todas as decisões do `P
 - [x] **Provider offline (`MockProvider`)** — o framework roda de ponta a ponta sem nenhuma API key, mapeando pedidos para chamadas de ferramenta reais; base para demos, smoke tests e CI
 - [x] **Comando `apathy demo`** — sequência scriptada que prova o loop completo (write → read → list → bash → grep) num workspace temporário
 - [x] **Comando `apathy run "<tarefa>"`** — execução single-shot, não-interativa e scriptável de uma tarefa (offline ou com LLM real)
+- [x] **Delegação a subagente offline** — o agente delega via ferramenta `task`; o orquestrador transmite os eventos do subagente para que a atividade dele seja visível em tempo real no terminal
 - [x] **Comandos `apathy tools` e `apathy version`** — introspecção do toolkit e da versão
 - [x] **Ícone e banner** — máscara com mira (`assets/apathy-icon.svg` + banner ASCII no terminal)
 

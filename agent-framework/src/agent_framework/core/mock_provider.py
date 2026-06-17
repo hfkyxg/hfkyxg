@@ -43,6 +43,9 @@ class MockProvider(ModelProvider):
             for tr in last.tool_results:
                 tag = "✗ erro" if tr.is_error else "✓ ok"
                 snippet = tr.content.strip()
+                # Avoid stacking "(mock) Resultado..." when the result already
+                # came from a subagent (which itself produced a mock summary).
+                snippet = snippet.replace("(mock) Resultado da ferramenta:", "").strip()
                 if len(snippet) > 500:
                     snippet = snippet[:500] + "…"
                 lines.append(f"[{tag}] {snippet}")
@@ -88,6 +91,41 @@ class MockProvider(ModelProvider):
             if name not in available:
                 return None
             return ToolCall(id=uuid.uuid4().hex, name=name, arguments=args)
+
+        # delegate to a subagent (checked first — the subtask text may itself
+        # contain other keywords like "escreva" that we must not match here).
+        # Require a real delegation directive — an imperative verb, or a
+        # "sub-agent" mention introduced by a delegation preposition — so the
+        # bare word "subagente" inside content does not trigger delegation.
+        delegation = re.search(r"\b(delegue|delega|delegate)\b", lower) or re.search(
+            r"\b(?:ao|à|para|pro|use|usar|usando|com|to|using)\s+"
+            r"(?:o\s+|um\s+|a\s+)?sub-?agent(?:e)?\b",
+            lower,
+        )
+        if delegation:
+            # The subtask is whatever follows the first colon; e.g.
+            # "delegue ao subagente: escreva X" -> subtask "escreva X".
+            if ":" in text:
+                subtask = text.split(":", 1)[1].strip()
+            else:
+                subtask = re.sub(
+                    r"^.*?\b(?:delegue|delega|subagente|subagent|delegate)\b[\s:]*"
+                    r"(?:(?:para|ao|to)\s+(?:o\s+)?(?:subagente|subagent)?\s*)?",
+                    "",
+                    text,
+                    flags=re.IGNORECASE,
+                ).strip()
+            # Guard against recursive delegation: strip only LEADING delegation
+            # keywords (not ones inside the content), so the child does real work.
+            subtask = re.sub(
+                r"^(?:\b(?:delegue|delega|subagente|subagent|delegate)\b[:\s]*)+",
+                "",
+                subtask,
+                flags=re.IGNORECASE,
+            ).strip()
+            if not subtask:
+                subtask = "liste o diretório ."
+            return call("task", {"prompt": subtask, "persona": "demo"})
 
         # bash / run command
         if re.search(r"\b(rode|execute|run|bash|shell|comando)\b", lower):

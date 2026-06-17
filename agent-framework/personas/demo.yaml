@@ -11,6 +11,7 @@ enabled_tools:
   - grep
   - glob
   - write_file
+  - task
 
 permission_overrides: []
 
