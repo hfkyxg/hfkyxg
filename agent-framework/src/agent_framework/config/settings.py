@@ -53,6 +53,14 @@ class Settings(BaseSettings):
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""
 
+    # ── Email (SMTP or Mailgun) ────────────────────────────────────────────────
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    mailgun_api_key: str = ""
+    mailgun_domain: str = ""
+
     # ── Memory / storage ──────────────────────────────────────────────────────
     memory_db_path: str = ""       # defaults to ~/.apathy/memory.db when empty
 

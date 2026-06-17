@@ -1,5 +1,6 @@
 from agent_framework.core.tool import ToolRegistry
 from agent_framework.tools.database import DatabaseTool
+from agent_framework.tools.email_send import EmailSendTool
 from agent_framework.tools.files import EditFileTool, ListDirTool, ReadFileTool, WriteFileTool
 from agent_framework.tools.memory import MemoryTool
 from agent_framework.tools.notify import NotifyTool
@@ -32,6 +33,7 @@ def register_builtin_tools(
         NotifyTool(),
         DatabaseTool(),
         FileOrganizeTool(),
+        EmailSendTool(),
         TaskTool(personas=task_personas or {}),
     ]
     for tool in all_tools:

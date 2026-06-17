@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import uuid
 from typing import Any
 
 from rich.console import Console
@@ -20,12 +21,18 @@ from agent_framework.core.permissions import PermissionDecision
 
 console = Console()
 
+# Pending tool call waiting for its result (for ActionLog recording)
+_pending: dict[str, tuple[str, dict]] = {}  # call_id → (tool_name, arguments)
 
-def render_event(event: AgentEvent) -> None:
+
+def render_event(event: AgentEvent, *, session_id: str = "") -> None:
+    from agent_framework.core.action_log import get_log
+
     if isinstance(event, AssistantTextEvent):
         console.print(Text(event.text, style="white"))
     elif isinstance(event, ToolCallEvent):
         tc = event.tool_call
+        _pending[tc.id] = (tc.name, tc.arguments)
         body = f"[dim]{escape(str(tc.arguments))}[/dim]"
         console.print(Panel(body, title=f"[cyan]Tool: {tc.name}[/cyan]", border_style="cyan"))
     elif isinstance(event, PermissionDecisionEvent):
@@ -39,6 +46,22 @@ def render_event(event: AgentEvent) -> None:
         preview = event.result[:300] + ("…" if len(event.result) > 300 else "")
         console.print(
             f"[{style}]  {prefix} {event.tool_name}:[/{style}] [dim]{escape(preview)}[/dim]"
+        )
+        # Record in ActionLog for history/revert
+        entry_id = uuid.uuid4().hex[:8]
+        # Find matching pending call arguments
+        matched_args: dict = {}
+        for cid, (tname, targs) in list(_pending.items()):
+            if tname == event.tool_name:
+                matched_args = targs
+                del _pending[cid]
+                break
+        get_log().record(
+            entry_id=entry_id,
+            tool_name=event.tool_name,
+            arguments=matched_args,
+            result=event.result[:500],
+            session_id=session_id,
         )
     elif isinstance(event, ErrorEvent):
         console.print(f"[bold red]Error: {escape(event.error)}[/bold red]")

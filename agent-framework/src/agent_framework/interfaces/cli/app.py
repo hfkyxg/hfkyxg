@@ -839,5 +839,68 @@ def run_skill(
     asyncio.run(_run())
 
 
+@app.command()
+def history(
+    n: Annotated[int, typer.Option("--last", "-n", help="Number of entries to show")] = 20,
+    revertible_only: Annotated[
+        bool, typer.Option("--revertible", help="Show only revertible actions")
+    ] = False,
+) -> None:
+    """Show the action history log (all tool calls made by apathy)."""
+    from rich.console import Console
+    from rich.table import Table
+
+    from agent_framework.core.action_log import get_log
+
+    console = Console()
+    log = get_log()
+    entries = log.revertible_entries() if revertible_only else log.recent(n)
+
+    if not entries:
+        console.print("[dim]No actions recorded in this session.[/dim]")
+        return
+
+    table = Table(title=f"Action History (last {n})", show_lines=False)
+    table.add_column("ID", style="dim", width=10)
+    table.add_column("Time", style="dim", width=10)
+    table.add_column("Tool", style="cyan", width=16)
+    table.add_column("Revert?", justify="center", width=8)
+    table.add_column("Preview")
+
+    for e in entries:
+        rev = "[green]yes[/green]" if (e.revertible and not e.reverted) else (
+            "[dim]reverted[/dim]" if e.reverted else "[dim]no[/dim]"
+        )
+        preview = str(e.arguments)[:60] + ("…" if len(str(e.arguments)) > 60 else "")
+        table.add_row(e.id, e.timestamp.strftime("%H:%M:%S"), e.tool_name, rev, preview)
+
+    console.print(table)
+    revertible = log.revertible_entries()
+    if revertible:
+        console.print(
+            f"\n[dim]{len(revertible)} revertible action(s). "
+            f"Run: [bold]apathy revert <id>[/bold][/dim]"
+        )
+
+
+@app.command()
+def revert(
+    entry_id: Annotated[str, typer.Argument(help="Action ID to revert (from 'apathy history')")],
+) -> None:
+    """Revert a previous action (write_file, edit_file, organize_files)."""
+    from rich.console import Console
+
+    from agent_framework.core.action_log import get_log
+
+    console = Console()
+    log = get_log()
+
+    ok, msg = log.revert(entry_id)
+    if ok:
+        console.print(f"[bold green]✓ Reverted:[/bold green] {msg}")
+    else:
+        console.print(f"[red]✗ Could not revert:[/red] {msg}")
+
+
 def main() -> None:
     app()
