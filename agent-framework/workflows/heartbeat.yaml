@@ -1,14 +1,12 @@
 name: heartbeat
-description: Runs every minute to confirm the runtime is alive and log a status note.
-
+description: "Periodic system check every minute"
+enabled: true
 triggers:
   - type: schedule
-    interval: "60s"
-
+    interval: "1m"
 steps:
-  - name: ping
+  - name: check
     persona: demo
-    task: "escreva o arquivo ./runtime_status.txt com conteúdo: apathy runtime alive"
+    task: "rode: echo 'apathy heartbeat at {timestamp}'"
     workspace: "."
-
 permission: autopilot

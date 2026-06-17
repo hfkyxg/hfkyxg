@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from enum import Enum
@@ -71,24 +72,27 @@ def always_allow() -> PermissionGate:
     return gate
 
 
-def workspace_gate(workspace_root: str, ask_callback: AskCallback | None = None) -> PermissionGate:
+def workspace_gate(
+    workspace_root: str,
+    ask_callback: AskCallback | None = None,
+) -> PermissionGate:
     """Auto-allow all tool calls whose path argument stays inside *workspace_root*.
 
     Any path-using tool call that escapes the workspace sandbox still asks the user.
     Non-path tools (e.g. bash) are auto-allowed inside daemon/project execution.
     """
-    import os
+
+    workspace_abs = os.path.realpath(os.path.expanduser(workspace_root))
 
     def _inside_workspace(arguments: dict) -> bool:
-        root = os.path.realpath(workspace_root)
         for v in arguments.values():
             if not isinstance(v, str):
                 continue
             # Only check values that look like paths
             if "/" not in v and "\\" not in v:
                 continue
-            real = os.path.realpath(v)
-            if not real.startswith(root):
+            real = os.path.realpath(os.path.expanduser(v))
+            if not real.startswith(workspace_abs):
                 return False
         return True
 

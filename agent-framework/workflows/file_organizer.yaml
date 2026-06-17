@@ -1,0 +1,13 @@
+name: file_organizer
+description: "Organize files by extension when new ones appear"
+enabled: false
+triggers:
+  - type: watch
+    path: ~/Downloads
+    events: [created]
+steps:
+  - name: organize
+    persona: demo
+    task: "rode: echo 'New file detected: {file_name} ({event_type})'"
+    workspace: "~/Downloads"
+permission: workspace

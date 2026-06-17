@@ -2,9 +2,23 @@
 from __future__ import annotations
 
 import asyncio
+import uuid
 from pathlib import Path
 
 import pytest
+
+from agent_framework.core.messages import Message
+from agent_framework.core.persona import Persona
+from agent_framework.core.provider import ModelProvider, ProviderResponse
+from agent_framework.core.runtime import AgentRuntime, JobStatus
+from agent_framework.core.tool import ToolRegistry
+from agent_framework.core.workflow import (
+    PermissionMode,
+    TriggerType,
+    Workflow,
+    WorkflowStep,
+    WorkflowTrigger,
+)
 
 # ── EventBus ────────────────────────────────────────────────────────────────
 
@@ -238,3 +252,206 @@ class TestWorkspaceGate:
         decision = await gate.check(tool, {"path": "/etc/passwd"})
         assert decision == PermissionDecision.DENY
         ask_mock.assert_called_once()
+
+
+# ── AgentRuntime integration tests ───────────────────────────────────────────
+
+
+class FakeProvider(ModelProvider):
+    """Cycles through preset responses."""
+
+    def __init__(self, responses: list[ProviderResponse]):
+        super().__init__(model="fake/model")
+        self._responses = responses
+        self._i = 0
+
+    async def complete(self, messages, tools, **kw) -> ProviderResponse:
+        r = self._responses[self._i % len(self._responses)]
+        self._i += 1
+        return r
+
+
+def _end_turn(text: str = "done") -> ProviderResponse:
+    return ProviderResponse(
+        message=Message(role="assistant", content=text),
+        stop_reason="end_turn",
+    )
+
+
+def _test_persona(name: str = "test") -> Persona:
+    return Persona(
+        name=name,
+        system_prompt="You are a test agent.",
+        provider="fake/model",
+        enabled_tools=["*"],
+    )
+
+
+def _simple_workflow(name: str = "wf", permission: str = "autopilot") -> Workflow:
+    return Workflow(
+        name=name,
+        triggers=[WorkflowTrigger(type=TriggerType.MANUAL)],
+        steps=[WorkflowStep(name="step1", persona="test", task="do something")],
+        permission=PermissionMode(permission),
+    )
+
+
+class TestRuntimeExecutesJob:
+    @pytest.mark.asyncio
+    async def test_runtime_executes_job(self, monkeypatch):
+        """Job reaches DONE status when provider returns end_turn."""
+        persona = _test_persona()
+        workflow = _simple_workflow()
+        registry = ToolRegistry()
+
+        runtime = AgentRuntime(
+            workflows=[workflow],
+            personas={"test": persona},
+            base_tools=registry,
+            num_workers=2,
+        )
+
+        fake_prov = FakeProvider([_end_turn("all done")])
+        monkeypatch.setattr(
+            "agent_framework.core.provider.ModelProvider.from_persona",
+            lambda p: fake_prov,
+        )
+
+        await runtime.start()
+        job_id = await runtime.trigger_manual("wf")
+        # Wait for job to complete (max 10s)
+        deadline = asyncio.get_event_loop().time() + 10
+        while asyncio.get_event_loop().time() < deadline:
+            job = runtime.jobs.get(job_id)
+            if job and job.status in (JobStatus.DONE, JobStatus.FAILED):
+                break
+            await asyncio.sleep(0.05)
+        await runtime.stop()
+
+        job = runtime.jobs.get(job_id)
+        assert job is not None
+        assert job.status == JobStatus.DONE, f"Expected DONE, got {job.status}; error={job.error}"
+
+    @pytest.mark.asyncio
+    async def test_runtime_permission_broker_allow(self, monkeypatch):
+        """Broker gate pre-approves: tool runs successfully."""
+        from agent_framework.core.messages import ToolCall
+        from agent_framework.tools.files import WriteFileTool
+
+        persona = _test_persona()
+        workflow = _simple_workflow("wf_ask", permission="ask")
+        registry = ToolRegistry()
+        registry.register(WriteFileTool())
+
+        runtime = AgentRuntime(
+            workflows=[workflow],
+            personas={"test": persona},
+            base_tools=registry,
+            num_workers=1,
+        )
+
+        tc_id = uuid.uuid4().hex
+        write_resp = ProviderResponse(
+            message=Message(
+                role="assistant",
+                tool_calls=[
+                    ToolCall(
+                        id=tc_id,
+                        name="write_file",
+                        arguments={"path": "/tmp/apathy_test_broker.txt", "content": "hi"},
+                    )
+                ],
+            ),
+            stop_reason="tool_calls",
+        )
+        fake_prov = FakeProvider([write_resp, _end_turn("written")])
+        monkeypatch.setattr(
+            "agent_framework.core.provider.ModelProvider.from_persona",
+            lambda p: fake_prov,
+        )
+
+        await runtime.start()
+        job_id = await runtime.trigger_manual("wf_ask")
+
+        async def _auto_approve() -> None:
+            for _ in range(20):
+                await asyncio.sleep(0.1)
+                for req_id in list(runtime.perm_requests.keys()):
+                    await runtime.approve_permission(req_id, allow=True)
+
+        approve_task = asyncio.create_task(_auto_approve())
+
+        deadline = asyncio.get_event_loop().time() + 10
+        while asyncio.get_event_loop().time() < deadline:
+            job = runtime.jobs.get(job_id)
+            if job and job.status in (JobStatus.DONE, JobStatus.FAILED):
+                break
+            await asyncio.sleep(0.05)
+
+        approve_task.cancel()
+        await runtime.stop()
+
+        job = runtime.jobs[job_id]
+        assert job.status == JobStatus.DONE, f"Expected DONE, got {job.status}; error={job.error}"
+
+    @pytest.mark.asyncio
+    async def test_runtime_permission_broker_deny(self, monkeypatch):
+        """Broker gate denies: tool is blocked, job still finishes."""
+        from agent_framework.core.messages import ToolCall
+        from agent_framework.tools.files import WriteFileTool
+
+        persona = _test_persona()
+        workflow = _simple_workflow("wf_deny", permission="ask")
+        registry = ToolRegistry()
+        registry.register(WriteFileTool())
+
+        runtime = AgentRuntime(
+            workflows=[workflow],
+            personas={"test": persona},
+            base_tools=registry,
+            num_workers=1,
+        )
+
+        tc_id = uuid.uuid4().hex
+        write_resp = ProviderResponse(
+            message=Message(
+                role="assistant",
+                tool_calls=[
+                    ToolCall(
+                        id=tc_id,
+                        name="write_file",
+                        arguments={"path": "/tmp/apathy_deny.txt", "content": "no"},
+                    )
+                ],
+            ),
+            stop_reason="tool_calls",
+        )
+        fake_prov = FakeProvider([write_resp, _end_turn("denied by broker")])
+        monkeypatch.setattr(
+            "agent_framework.core.provider.ModelProvider.from_persona",
+            lambda p: fake_prov,
+        )
+
+        await runtime.start()
+        job_id = await runtime.trigger_manual("wf_deny")
+
+        async def _auto_deny() -> None:
+            for _ in range(20):
+                await asyncio.sleep(0.1)
+                for req_id in list(runtime.perm_requests.keys()):
+                    await runtime.approve_permission(req_id, allow=False)
+
+        deny_task = asyncio.create_task(_auto_deny())
+
+        deadline = asyncio.get_event_loop().time() + 10
+        while asyncio.get_event_loop().time() < deadline:
+            job = runtime.jobs.get(job_id)
+            if job and job.status in (JobStatus.DONE, JobStatus.FAILED):
+                break
+            await asyncio.sleep(0.05)
+
+        deny_task.cancel()
+        await runtime.stop()
+
+        job = runtime.jobs[job_id]
+        assert job.status in (JobStatus.DONE, JobStatus.FAILED)
