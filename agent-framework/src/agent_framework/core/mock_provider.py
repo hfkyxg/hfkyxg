@@ -10,19 +10,40 @@ the box, for demos, smoke tests and CI.
 """
 from __future__ import annotations
 
+import os
 import re
 import uuid
 
+from agent_framework.core.content_generator import generate_content
 from agent_framework.core.messages import Message, ToolCall
 from agent_framework.core.provider import ModelProvider, ProviderResponse
 
 # Heuristic intent → tool mapping. Each entry: (compiled regex, tool name, arg builder).
-_PATH_RE = re.compile(r"([\w./\-]+\.\w+|[\w./\-]+/)")
+# Order: absolute paths (with or without extension) > relative paths with ext > dir paths.
+_PATH_RE = re.compile(
+    r"(/[\w./\-]+)"            # absolute path (handles Dockerfile, Makefile, etc.)
+    r"|([\w./\-]+\.\w+)"       # relative path with extension
+    r"|([\w./\-]+/)"           # directory path ending in /
+)
+
+# Well-known extensionless filenames that should be treated as file paths.
+_EXTENSIONLESS = frozenset({
+    "Dockerfile", "Makefile", "makefile", "Jenkinsfile",
+    ".env", ".gitignore", ".gitattributes", ".dockerignore",
+})
 
 
 def _extract_path(text: str, default: str = ".") -> str:
+    # Prefer absolute paths first
     m = _PATH_RE.search(text)
-    return m.group(1) if m else default
+    if m:
+        return next(g for g in m.groups() if g is not None)
+    # Fallback: check for well-known extensionless filenames in the text
+    for token in text.split():
+        clean = token.strip("'\",:;")
+        if clean in _EXTENSIONLESS or os.path.basename(clean) in _EXTENSIONLESS:
+            return clean
+    return default
 
 
 class MockProvider(ModelProvider):
@@ -127,20 +148,13 @@ class MockProvider(ModelProvider):
                 subtask = "liste o diretório ."
             return call("task", {"prompt": subtask, "persona": "demo"})
 
-        # bash / run command
-        if re.search(r"\b(rode|execute|run|bash|shell|comando)\b", lower):
-            m = re.search(
-                r"(?:rode|execute|run|comando|bash|shell)[:\s]+(.+)$", text, re.IGNORECASE
-            )
-            cmd = m.group(1).strip().strip("'\"") if m else "echo hello-from-apathy"
-            return call("bash", {"command": cmd})
-
-        # write file — try to extract explicit content after a separator
+        # write file — checked BEFORE bash so "escreva ... Makefile — targets: ... run ..."
+        # does not accidentally route to bash because "run" appears in the description.
         if any(k in lower for k in ("escreva", "crie", "write", "salve")):
             path = _extract_path(text, "apathy-demo.txt")
-            content = "criado pelo apathy demo\n"
+            content: str | None = None
             cm = re.search(
-                r"(?:com\s+conte[uú]do|contendo|content|with\s+content|:)\s+(.+)$",
+                r"(?:com\s+conte[uú]do|contendo|with\s+content)\s+(.+)$",
                 text,
                 re.IGNORECASE | re.DOTALL,
             )
@@ -149,7 +163,20 @@ class MockProvider(ModelProvider):
                 # don't mistake the filename for content
                 if extracted and extracted != path:
                     content = extracted + ("\n" if not extracted.endswith("\n") else "")
+            if content is None:
+                content = generate_content(path, text)
             return call("write_file", {"path": path, "content": content})
+
+        # bash / run command — after write so "run" in a file description doesn't hijack.
+        # Require the execution keyword before ":" or at a word boundary near a command.
+        if re.search(r"\b(rode|execute|bash|shell|comando)\b", lower) or re.search(
+            r"\brun\s*:", lower
+        ):
+            m = re.search(
+                r"(?:rode|execute|run|comando|bash|shell)[:\s]+(.+)$", text, re.IGNORECASE
+            )
+            cmd = m.group(1).strip().strip("'\"") if m else "echo hello-from-apathy"
+            return call("bash", {"command": cmd})
 
         # read file
         if any(k in lower for k in ("leia", "read", "mostre o arquivo", "conteúdo de")):
