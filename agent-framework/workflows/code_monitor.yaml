@@ -1,0 +1,19 @@
+name: code_monitor
+description: "Watch Python files and run tests + lint on change"
+enabled: true
+triggers:
+  - type: watch
+    path: ./src
+    pattern: "*.py"
+    events: [modified, created]
+steps:
+  - name: lint
+    persona: demo
+    task: "rode: python -m py_compile {file} && echo 'syntax ok: {file_name}'"
+    workspace: "."
+  - name: test
+    persona: demo
+    task: "busque TODO {file}"
+    workspace: "."
+parallel: true
+permission: workspace

@@ -1,0 +1,12 @@
+name: heartbeat
+description: "Periodic system check every minute"
+enabled: true
+triggers:
+  - type: schedule
+    interval: "1m"
+steps:
+  - name: check
+    persona: demo
+    task: "rode: echo 'apathy heartbeat at {timestamp}'"
+    workspace: "."
+permission: autopilot

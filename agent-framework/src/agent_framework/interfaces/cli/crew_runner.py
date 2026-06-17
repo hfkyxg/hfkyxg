@@ -11,6 +11,7 @@ from agent_framework.core.permissions import PermissionGate
 from agent_framework.core.persona import Persona
 from agent_framework.core.project import ProjectCrew, TaskNode
 from agent_framework.core.tool import ToolRegistry
+from agent_framework.interfaces.cli.banner import print_banner
 from agent_framework.tools import register_builtin_tools
 
 console = Console()
@@ -61,10 +62,11 @@ async def run_build(
     *,
     dry_run: bool = False,
 ) -> None:
+    print_banner(console, subtitle="build — team of agents working in parallel")
     console.print(
         Panel(
             f"[bold white]{objective}[/bold white]",
-            title="[bold green]agent-framework build[/bold green]",
+            title="[bold green]objetivo[/bold green]",
             border_style="green",
         )
     )

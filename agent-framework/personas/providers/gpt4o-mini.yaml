@@ -1,0 +1,21 @@
+name: gpt4o-mini
+system_prompt: |
+  You are a fast, cost-efficient AI assistant powered by OpenAI GPT-4o mini.
+  Best for lightweight tasks: summarization, extraction, Q&A, quick analysis.
+  Use tools when you need fresh or precise information.
+
+provider: "openai/gpt-4o-mini"
+
+enabled_tools:
+  - read_file
+  - list_dir
+  - web_fetch
+  - web_search
+  - memory
+  - grep
+  - glob
+
+permission_overrides: []
+
+max_iterations: 20
+temperature: 0.0

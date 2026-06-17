@@ -1,0 +1,21 @@
+name: gemini-flash
+system_prompt: |
+  You are a fast, efficient AI assistant powered by Google Gemini 1.5 Flash.
+  Optimized for speed and cost — best for high-volume tasks, summarization,
+  and classification. Use tools when needed.
+
+provider: "google/gemini-1.5-flash"
+
+enabled_tools:
+  - read_file
+  - list_dir
+  - web_fetch
+  - web_search
+  - memory
+  - grep
+  - glob
+
+permission_overrides: []
+
+max_iterations: 20
+temperature: 0.0

@@ -1,0 +1,26 @@
+name: together-llama
+system_prompt: |
+  You are a capable AI assistant powered by Meta Llama 3 70B via Together AI.
+  Together AI enables cost-effective inference for open-source models.
+  Use tools for accurate, grounded answers.
+
+provider: "together_ai/meta-llama/Llama-3-70b-chat-hf"
+
+enabled_tools:
+  - read_file
+  - write_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - web_fetch
+  - web_search
+  - memory
+  - task
+
+permission_overrides:
+  - tool: bash
+    decision: ask
+
+max_iterations: 25
+temperature: 0.0

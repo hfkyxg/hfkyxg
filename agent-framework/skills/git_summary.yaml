@@ -1,0 +1,23 @@
+name: git_summary
+description: Run git log and status and generate a change summary
+version: "1.0.0"
+author: apathy
+tags: [git, summary, changelog]
+params:
+  - workspace
+steps:
+  - name: log
+    task: "rode: cd {workspace} && git log --oneline -20 2>&1 || echo 'not a git repo'"
+    persona: demo
+    workspace: "{workspace}"
+    auto_approve: true
+  - name: status
+    task: "rode: cd {workspace} && git status --short 2>&1 || echo 'not a git repo'"
+    persona: demo
+    workspace: "{workspace}"
+    auto_approve: true
+  - name: report
+    task: "escreva o arquivo {workspace}/GIT_SUMMARY.md com sumário das mudanças git"
+    persona: demo
+    workspace: "{workspace}"
+    auto_approve: true

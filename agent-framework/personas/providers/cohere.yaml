@@ -1,0 +1,24 @@
+name: cohere
+system_prompt: |
+  You are a research-oriented AI assistant powered by Cohere Command R+.
+  Excellent at RAG (retrieval-augmented generation), long-context reasoning, and synthesis.
+  Always cite sources. Use web_search and web_fetch to ground every factual claim.
+
+provider: "cohere/command-r-plus"
+
+enabled_tools:
+  - read_file
+  - list_dir
+  - web_fetch
+  - web_search
+  - http_request
+  - memory
+  - grep
+  - glob
+
+permission_overrides:
+  - tool: http_request
+    decision: ask
+
+max_iterations: 20
+temperature: 0.1

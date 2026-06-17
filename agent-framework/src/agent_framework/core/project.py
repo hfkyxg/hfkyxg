@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
@@ -168,6 +169,59 @@ class ProjectCrew:
     async def plan(self, objective: str) -> TaskGraph:
         """Run the planner subagent and return a validated TaskGraph."""
         planner_persona = self._persona("planner")
+
+        # Offline bypass: MockProvider can't return JSON, so build the plan directly.
+        if planner_persona.provider.startswith(("mock/", "demo/")):
+            from agent_framework.core.content_generator import make_project_plan
+
+            lower_obj = objective.lower()
+            detected_type = "fastapi"
+            for kw, pt in [
+                ("fastapi", "fastapi"), ("api", "fastapi"), ("rest", "fastapi"),
+                ("cli", "cli"), ("tool", "cli"),
+                ("webapp", "webapp"), ("web", "webapp"), ("html", "webapp"),
+                ("data", "data"), ("analysis", "data"),
+            ]:
+                if kw in lower_obj:
+                    detected_type = pt
+                    break
+
+            name_m = re.search(
+                r"(?:chamado|named|called|nome|name)\s+([a-zA-Z0-9_\-]+)",
+                objective, re.IGNORECASE
+            )
+            name = name_m.group(1) if name_m else "myapp"
+            workspace = self._workspace
+
+            plan_steps = make_project_plan(detected_type, str(workspace), name)
+
+            def _role_for(path: str) -> str:
+                ext = path.rsplit(".", 1)[-1].lower() if "." in path.split("/")[-1] else ""
+                basename = path.split("/")[-1]
+                if ext == "py":
+                    if basename.startswith("test_"):
+                        return "backend"
+                    return "backend"
+                if basename in ("Dockerfile", "Makefile", "makefile", ".gitignore",
+                                ".dockerignore"):
+                    return "infra"
+                if ext in ("html", "css", "js"):
+                    return "frontend"
+                if basename.lower() == "readme.md":
+                    return "planner"
+                return "backend"
+
+            nodes = [
+                TaskNode(
+                    id=f"file_{i:02d}",
+                    description=step["task"],
+                    role=_role_for(step["path"]),
+                    depends_on=[],
+                )
+                for i, step in enumerate(plan_steps)
+            ]
+            return TaskGraph(nodes)
+
         prompt = (
             f"Objective: {objective}\n\n"
             f"Workspace directory: {self._workspace}\n\n"

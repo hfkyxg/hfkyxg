@@ -1,0 +1,19 @@
+name: backup_videos
+description: Organize videos one-folder-each and move them to a private cloud drive
+version: "1.0.0"
+author: apathy
+tags: [backup, videos, cloud, organize, private]
+params:
+  - folder      # local folder with videos
+  - remote      # private cloud destination, e.g. gdrive:VideosBackup
+steps:
+  - name: organize
+    task: "organize os vídeos da pasta {folder} vídeo por vídeo"
+    persona: demo
+    workspace: "{folder}"
+    auto_approve: true
+  - name: upload
+    task: "mova {folder} para a nuvem privada {remote}"
+    persona: demo
+    workspace: "{folder}"
+    auto_approve: true

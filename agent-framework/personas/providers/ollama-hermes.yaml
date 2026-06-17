@@ -1,0 +1,29 @@
+name: ollama-hermes
+system_prompt: |
+  You are an AI assistant powered by Hermes 3 running locally via Ollama.
+  100% offline — no API keys, no data sent to the cloud.
+  Hermes 3 excels at structured tool-calling and following complex instructions.
+  Use tools to ground your answers.
+
+# Install: ollama pull hermes3
+# Start Ollama: ollama serve
+provider: "ollama/hermes3"
+
+enabled_tools:
+  - read_file
+  - write_file
+  - edit_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - memory
+  - database
+  - task
+
+permission_overrides:
+  - tool: bash
+    decision: ask
+
+max_iterations: 25
+temperature: 0.0

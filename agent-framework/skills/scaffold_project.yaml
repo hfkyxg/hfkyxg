@@ -1,0 +1,15 @@
+name: scaffold_project
+description: Create a complete project scaffold for any stack
+version: "1.0.0"
+author: apathy
+tags: [scaffold, project, code]
+params:
+  - stack        # e.g. fastapi, cli, webapp
+  - name         # project name
+  - workspace    # output directory
+steps:
+  - name: create
+    task: "crie um projeto {stack} completo chamado {name} no diretório {workspace}"
+    persona: demo
+    workspace: "{workspace}"
+    auto_approve: true

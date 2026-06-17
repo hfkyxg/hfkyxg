@@ -1,0 +1,32 @@
+name: gemini-pro
+system_prompt: |
+  You are a helpful AI assistant powered by Google Gemini 1.5 Pro.
+  You have access to tools for files, shell, web search, memory, and notifications.
+  Always use tools when needed to provide accurate, grounded answers.
+  Think step by step and cite sources when fetching information.
+
+provider: "google/gemini-1.5-pro"
+
+enabled_tools:
+  - read_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - web_fetch
+  - web_search
+  - http_request
+  - memory
+  - notify
+  - write_file
+  - edit_file
+  - task
+
+permission_overrides:
+  - tool: bash
+    decision: ask
+  - tool: notify
+    decision: ask
+
+max_iterations: 30
+temperature: 0.0

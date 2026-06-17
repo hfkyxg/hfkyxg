@@ -1,0 +1,24 @@
+name: research
+description: Search the web on a topic, gather sources, and write a cited report
+version: "1.0.0"
+author: apathy
+tags: [research, web, search, report]
+params:
+  - topic
+  - workspace
+steps:
+  - name: search
+    task: "pesquise na web sobre {topic}"
+    persona: researcher
+    workspace: "{workspace}"
+    auto_approve: true
+  - name: remember
+    task: "guarde na memória que o tópico pesquisado foi: {topic}"
+    persona: researcher
+    workspace: "{workspace}"
+    auto_approve: true
+  - name: report
+    task: "escreva o arquivo {workspace}/research_{topic}.md com relatório de pesquisa sobre {topic}"
+    persona: demo
+    workspace: "{workspace}"
+    auto_approve: true

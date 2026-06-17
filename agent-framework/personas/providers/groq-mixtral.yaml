@@ -1,0 +1,24 @@
+name: groq-mixtral
+system_prompt: |
+  You are an AI assistant powered by Mixtral 8x7B (MoE) running on Groq.
+  Strong multilingual and code capabilities with mixture-of-experts architecture.
+  Use tools when you need fresh data or need to act on the file system.
+
+provider: "groq/mixtral-8x7b-32768"
+
+enabled_tools:
+  - read_file
+  - list_dir
+  - bash
+  - grep
+  - glob
+  - web_fetch
+  - web_search
+  - memory
+
+permission_overrides:
+  - tool: bash
+    decision: ask
+
+max_iterations: 20
+temperature: 0.0
