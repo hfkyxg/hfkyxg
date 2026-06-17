@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from pathlib import Path
+from typing import Annotated
 
 import typer
 
@@ -78,6 +79,37 @@ def run(
 
     p = Persona.from_yaml(persona)
     asyncio.run(run_once(p, task, workdir, auto_approve=yes))
+
+
+@app.command()
+def create(
+    project_type: Annotated[str, typer.Argument(help="Project type: fastapi, cli, webapp, data")],
+    name: Annotated[str, typer.Option("--name", "-n", help="Project name")] = "myapp",
+    workspace: Annotated[Path, typer.Option("--workspace", "-w")] = Path("./output"),
+    persona: Annotated[Path, typer.Option("--persona", "-p")] = Path("personas/demo.yaml"),
+    yes: Annotated[bool, typer.Option("--yes", "-y", help="Auto-approve all actions")] = False,
+) -> None:
+    """Create a complete project autonomously (no API key required with demo persona)."""
+    from rich.console import Console
+
+    from agent_framework.interfaces.cli.run_once import _show_workspace_tree, run_once
+
+    console = Console()
+    workspace_resolved = workspace.resolve()
+    console.print(
+        f"[bold cyan]Creating[/bold cyan] [yellow]{project_type}[/yellow] project "
+        f"'[green]{name}[/green]' in [blue]{workspace_resolved}[/blue]..."
+    )
+    workspace_resolved.mkdir(parents=True, exist_ok=True)
+    (workspace_resolved / "tests").mkdir(exist_ok=True)
+
+    p = Persona.from_yaml(persona)
+    prompt = (
+        f"crie um projeto {project_type} completo chamado {name} "
+        f"no diretório {workspace_resolved}"
+    )
+    asyncio.run(run_once(p, prompt, str(workspace_resolved), auto_approve=yes))
+    _show_workspace_tree(str(workspace_resolved), console)
 
 
 @app.command()

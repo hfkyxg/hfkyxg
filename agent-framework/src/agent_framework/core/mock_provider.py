@@ -14,7 +14,7 @@ import os
 import re
 import uuid
 
-from agent_framework.core.content_generator import generate_content
+from agent_framework.core.content_generator import generate_content, make_project_plan
 from agent_framework.core.messages import Message, ToolCall
 from agent_framework.core.provider import ModelProvider, ProviderResponse
 
@@ -51,6 +51,9 @@ class MockProvider(ModelProvider):
 
     def __init__(self, model: str = "mock/demo", **kw) -> None:
         super().__init__(model=model, **kw)
+        self._project_plan: list[dict[str, str]] | None = None
+        self._plan_step: int = 0
+        self._plan_finishing: bool = False  # True when we issued list_dir, waiting for final result
 
     async def complete(self, messages, tools, **kw) -> ProviderResponse:
         available = {
@@ -58,8 +61,64 @@ class MockProvider(ModelProvider):
         }
         last = messages[-1] if messages else None
 
-        # If the previous step produced tool results, summarize them and finish.
+        # If the previous step produced tool results:
         if last is not None and last.role == "tool":
+            # --- Project mode: advance through the plan ---
+            if self._plan_finishing:
+                # We just got the list_dir result — emit rich completion summary
+                plan = self._project_plan or []
+                workspace = plan[0]["path"].rsplit("/", 1)[0] if plan else "/tmp"
+                # Detect project type from first file task
+                first_task = plan[0]["task"] if plan else ""
+                if "fastapi" in first_task or "api" in first_task:
+                    startup = "pip install -r requirements.txt\nuvicorn main:app --reload"
+                elif "cli" in first_task or "command line" in first_task:
+                    startup = "pip install -r requirements.txt\npython main.py --help"
+                elif "html" in first_task or "webapp" in first_task or "css" in first_task:
+                    startup = "open index.html\n# or: python -m http.server 8080"
+                elif "data" in first_task or "analysis" in first_task:
+                    startup = "pip install -r requirements.txt\npython analysis.py"
+                else:
+                    startup = "python main.py"
+                file_list = "\n".join(f"  {s['path']}" for s in plan)
+                text = (
+                    f"(apathy) Projeto criado com sucesso!\n\n"
+                    f"Arquivos gerados:\n{file_list}\n\n"
+                    f"Para iniciar:\n  cd {workspace}\n  {startup}\n"
+                )
+                # Reset state
+                self._project_plan = None
+                self._plan_step = 0
+                self._plan_finishing = False
+                return ProviderResponse(
+                    message=Message(role="assistant", content=text),
+                    stop_reason="end_turn",
+                )
+
+            if self._project_plan is not None:
+                if self._plan_step < len(self._project_plan):
+                    # More files to write — return next tool call
+                    step = self._project_plan[self._plan_step]
+                    content = generate_content(step["path"], step["task"])
+                    self._plan_step += 1
+                    tc = ToolCall(id=uuid.uuid4().hex, name="write_file",
+                                  arguments={"path": step["path"], "content": content})
+                    return ProviderResponse(
+                        message=Message(role="assistant", content=None, tool_calls=[tc]),
+                        stop_reason="tool_calls",
+                    )
+                else:
+                    # All files written — do a list_dir on the workspace root
+                    workspace = self._project_plan[0]["path"].rsplit("/", 1)[0]
+                    self._plan_finishing = True
+                    tc = ToolCall(id=uuid.uuid4().hex, name="list_dir",
+                                  arguments={"path": workspace})
+                    return ProviderResponse(
+                        message=Message(role="assistant", content=None, tool_calls=[tc]),
+                        stop_reason="tool_calls",
+                    )
+
+            # Not in project mode — summarize and end_turn (original behavior)
             lines = []
             for tr in last.tool_results:
                 tag = "✗ erro" if tr.is_error else "✓ ok"
@@ -112,6 +171,56 @@ class MockProvider(ModelProvider):
             if name not in available:
                 return None
             return ToolCall(id=uuid.uuid4().hex, name=name, arguments=args)
+
+        # ── project-creation detection (must run before delegation check) ──────
+        _PROJECT_TRIGGERS = (
+            "projeto completo", "complete project", "crie um projeto",
+            "create a project", "build a complete", "crie o projeto",
+            "construa um projeto",
+        )
+        _TYPE_KEYWORDS = {
+            "fastapi": "fastapi", "api": "fastapi", "rest": "fastapi",
+            "cli": "cli", "tool": "cli",
+            "webapp": "webapp", "web": "webapp", "html": "webapp",
+            "data": "data", "analysis": "data",
+        }
+        # Also match "crie projeto X" where X is a known type
+        _CRIE_PROJETO_RE = re.compile(
+            r"\bcrie\s+(?:um\s+)?projeto\s+(\w+)", re.IGNORECASE
+        )
+        _is_project_request = any(t in lower for t in _PROJECT_TRIGGERS)
+        _crie_m = _CRIE_PROJETO_RE.search(lower)
+        if _crie_m and _crie_m.group(1).lower() in _TYPE_KEYWORDS:
+            _is_project_request = True
+        if _is_project_request and "write_file" in available:
+            # Detect project type
+            detected_type = "fastapi"
+            for kw, pt in _TYPE_KEYWORDS.items():
+                if kw in lower:
+                    detected_type = pt
+                    break
+            # Extract workspace
+            workspace_path = _extract_path(text, "/tmp/apathy-project")
+            # If extracted path looks like a file (has extension), use parent dir
+            if "." in workspace_path.split("/")[-1]:
+                workspace_path = "/tmp/apathy-project"
+            # Extract name — look for "chamado X" or "named X" or "called X"
+            name = "myapp"
+            nm = re.search(
+                r"(?:chamado|named|called|nome|name)\s+([a-zA-Z0-9_\-]+)",
+                text, re.IGNORECASE
+            )
+            if nm:
+                name = nm.group(1)
+            # Build the plan and set state
+            self._project_plan = make_project_plan(detected_type, workspace_path, name)
+            self._plan_step = 0
+            self._plan_finishing = False
+            # Return the first write_file tool call
+            step = self._project_plan[self._plan_step]
+            content = generate_content(step["path"], step["task"])
+            self._plan_step += 1
+            return call("write_file", {"path": step["path"], "content": content})
 
         # delegate to a subagent (checked first — the subtask text may itself
         # contain other keywords like "escreva" that we must not match here).
