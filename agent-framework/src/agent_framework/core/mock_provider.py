@@ -307,6 +307,37 @@ class MockProvider(ModelProvider):
             pattern = m.group(1) if m else "TODO"
             return call("grep", {"pattern": pattern, "path": "."})
 
+        # organize files
+        if any(k in lower for k in ("organize", "organizar", "ordene", "classifique", "mova os")):
+            path = _extract_path(text, ".")
+            mode = "by_type"
+            if "data" in lower or "date" in lower or "dia" in lower:
+                mode = "by_date"
+            elif "size" in lower or "tamanho" in lower or "grande" in lower:
+                mode = "by_size"
+            return call("organize_files", {"path": path, "mode": mode, "dry_run": False})
+
+        # memory
+        _mem_set_kw = ("lembre", "memorize", "salve na memória", "memory set", "guarde")
+        if any(k in lower for k in _mem_set_kw):
+            m = re.search(r"(?:que|that|:)\s+(.+)$", text, re.IGNORECASE)
+            value = m.group(1).strip() if m else text
+            return call("memory", {"action": "set", "key": "last_task", "value": value})
+        _mem_get_kw = ("recall", "lembre-se", "recupere da memória", "memory get")
+        if any(k in lower for k in _mem_get_kw):
+            return call("memory", {"action": "get", "key": "last_task"})
+
+        # web search
+        _search_kw = ("pesquise", "search for", "procure na web", "web search", "busca web")
+        if any(k in lower for k in _search_kw):
+            _patt = (
+                r"(?:pesquise|search for|busque|procure)"
+                r"\s+(?:na web\s+)?(?:sobre\s+)?(.+)$"
+            )
+            m = re.search(_patt, text, re.IGNORECASE)
+            query = m.group(1).strip() if m else text
+            return call("web_search", {"query": query})
+
         # web fetch
         url_m = re.search(r"https?://\S+", text)
         if url_m and ("web" in lower or "fetch" in lower or "busque" in lower or "url" in lower):

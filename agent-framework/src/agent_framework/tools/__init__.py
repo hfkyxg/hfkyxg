@@ -3,6 +3,7 @@ from agent_framework.tools.database import DatabaseTool
 from agent_framework.tools.files import EditFileTool, ListDirTool, ReadFileTool, WriteFileTool
 from agent_framework.tools.memory import MemoryTool
 from agent_framework.tools.notify import NotifyTool
+from agent_framework.tools.organize import FileOrganizeTool
 from agent_framework.tools.search import GlobTool, GrepTool
 from agent_framework.tools.shell import BashTool
 from agent_framework.tools.task import TaskTool
@@ -30,6 +31,7 @@ def register_builtin_tools(
         MemoryTool(),
         NotifyTool(),
         DatabaseTool(),
+        FileOrganizeTool(),
         TaskTool(personas=task_personas or {}),
     ]
     for tool in all_tools:
