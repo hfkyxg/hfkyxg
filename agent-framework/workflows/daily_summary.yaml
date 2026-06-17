@@ -1,0 +1,21 @@
+name: daily_summary
+description: |
+  Every hour, lists all Python files in the project and writes a summary
+  of recently modified files to ./reports/summary.txt.
+
+triggers:
+  - type: schedule
+    interval: "1h"
+
+steps:
+  - name: scan
+    persona: demo
+    task: "liste os arquivos do diretório ./src"
+    workspace: "."
+  - name: report
+    persona: demo
+    task: "escreva o arquivo ./reports/summary.txt com conteúdo: resumo gerado automaticamente pelo agente"
+    workspace: "."
+
+permission: workspace
+parallel: false

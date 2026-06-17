@@ -69,3 +69,38 @@ def always_allow() -> PermissionGate:
     """Convenience gate for tests and non-interactive contexts that need to skip all gates."""
     gate = PermissionGate(autopilot=True)
     return gate
+
+
+def workspace_gate(workspace_root: str, ask_callback: AskCallback | None = None) -> PermissionGate:
+    """Auto-allow all tool calls whose path argument stays inside *workspace_root*.
+
+    Any path-using tool call that escapes the workspace sandbox still asks the user.
+    Non-path tools (e.g. bash) are auto-allowed inside daemon/project execution.
+    """
+    import os
+
+    def _inside_workspace(arguments: dict) -> bool:
+        root = os.path.realpath(workspace_root)
+        for v in arguments.values():
+            if not isinstance(v, str):
+                continue
+            # Only check values that look like paths
+            if "/" not in v and "\\" not in v:
+                continue
+            real = os.path.realpath(v)
+            if not real.startswith(root):
+                return False
+        return True
+
+    rules = [
+        PermissionRule(
+            tool_name="*",
+            decision=PermissionDecision.ALLOW,
+            argument_predicate=_inside_workspace,
+        ),
+        PermissionRule(
+            tool_name="*",
+            decision=PermissionDecision.ASK,
+        ),
+    ]
+    return PermissionGate(rules=rules, ask_callback=ask_callback)

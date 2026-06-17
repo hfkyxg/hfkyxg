@@ -157,5 +157,126 @@ def version() -> None:
     Console().print(f"[bold]apathy[/bold] {v}")
 
 
+@app.command()
+def serve(
+    workflows_dir: Path = typer.Option(
+        Path("workflows"),
+        "--workflows-dir",
+        help="Directory containing workflow YAML files",
+    ),
+    personas_dir: Path = typer.Option(
+        Path("personas"),
+        "--personas-dir",
+        help="Directory containing persona YAML files",
+    ),
+    workers: int = typer.Option(4, "--workers", "-w", help="Number of parallel worker agents"),
+) -> None:
+    """Start the apathy daemon — persistent multi-agent runtime with Rich dashboard."""
+    from agent_framework.core.runtime import AgentRuntime
+    from agent_framework.interfaces.cli.daemon import run_dashboard
+
+    runtime = AgentRuntime(
+        workflows_dir=str(workflows_dir),
+        personas_dir=str(personas_dir),
+        num_workers=workers,
+    )
+    asyncio.run(run_dashboard(runtime))
+
+
+@app.command(name="trigger")
+def trigger_workflow(
+    workflow_name: str = typer.Argument(..., help="Name of the workflow to trigger"),
+    workflows_dir: Path = typer.Option(
+        Path("workflows"),
+        "--workflows-dir",
+        help="Directory containing workflow YAML files",
+    ),
+    personas_dir: Path = typer.Option(
+        Path("personas"),
+        "--personas-dir",
+        help="Directory containing persona YAML files",
+    ),
+) -> None:
+    """Trigger a workflow once and run it to completion (non-daemon mode)."""
+    from rich.console import Console
+
+    from agent_framework.core.runtime import AgentRuntime
+    from agent_framework.core.workflow import Workflow
+
+    console = Console()
+    wfs = Workflow.load_all(workflows_dir)
+    wf = next((w for w in wfs if w.name == workflow_name), None)
+    if wf is None:
+        console.print(f"[red]Workflow {workflow_name!r} not found in {workflows_dir}[/red]")
+        raise typer.Exit(1)
+
+    runtime = AgentRuntime(
+        workflows_dir=str(workflows_dir),
+        personas_dir=str(personas_dir),
+        num_workers=min(4, len(wf.steps)),
+    )
+
+    async def _run() -> None:
+        await runtime.start()
+        job_id = await runtime.trigger_manual(workflow_name)
+        console.print(
+            f"[green]Triggered[/green] workflow [cyan]{workflow_name}[/cyan] (job {job_id})"
+        )
+        # Wait until all queued jobs finish (up to timeout)
+        for _ in range(wf.timeout_seconds * 2):
+            await asyncio.sleep(0.5)
+            if runtime.queued_count == 0 and not runtime.active_jobs:
+                break
+        await runtime.stop()
+
+    asyncio.run(_run())
+    done = [j for j in runtime.jobs.values() if j.status.value == "done"]
+    failed = [j for j in runtime.jobs.values() if j.status.value == "failed"]
+    console.print(f"[bold]Done:[/bold] {len(done)} step(s) completed, {len(failed)} failed")
+    if failed:
+        for j in failed:
+            console.print(f"  [red]FAILED[/red] {j.step_name}: {j.error}")
+
+
+@app.command(name="workflows-list")
+def workflows_list(
+    workflows_dir: Path = typer.Option(
+        Path("workflows"),
+        "--workflows-dir",
+        help="Directory containing workflow YAML files",
+    ),
+) -> None:
+    """List all available workflows."""
+    from rich.console import Console
+    from rich.table import Table
+
+    from agent_framework.core.workflow import Workflow
+
+    console = Console()
+    wfs = Workflow.load_all(workflows_dir)
+    if not wfs:
+        console.print(f"[dim]No workflows found in {workflows_dir}[/dim]")
+        return
+
+    table = Table(title="apathy workflows")
+    table.add_column("Name", style="cyan")
+    table.add_column("Triggers", style="yellow")
+    table.add_column("Steps", justify="center")
+    table.add_column("Permission")
+    table.add_column("Description")
+    for wf in wfs:
+        trigger_str = ", ".join(
+            f"{t.type.value}({t.interval or t.path or ''})" for t in wf.triggers
+        )
+        table.add_row(
+            wf.name,
+            trigger_str,
+            str(len(wf.steps)),
+            wf.permission.value,
+            wf.description.strip().splitlines()[0][:60] if wf.description else "",
+        )
+    console.print(table)
+
+
 def main() -> None:
     app()

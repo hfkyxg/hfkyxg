@@ -1,0 +1,20 @@
+name: code_monitor
+description: |
+  Watches Python source files; when one is created or modified,
+  checks it with py_compile and appends a lint note.
+
+triggers:
+  - type: watch
+    path: ./src
+    pattern: "*.py"
+    events: [modified, created]
+
+steps:
+  - name: lint
+    persona: demo
+    task: "rode: python -m py_compile {file} && echo 'OK: {file}' || echo 'SYNTAX ERROR: {file}'"
+    workspace: "."
+
+permission: workspace
+max_retries: 1
+timeout_seconds: 30

@@ -1,0 +1,14 @@
+name: heartbeat
+description: Runs every minute to confirm the runtime is alive and log a status note.
+
+triggers:
+  - type: schedule
+    interval: "60s"
+
+steps:
+  - name: ping
+    persona: demo
+    task: "escreva o arquivo ./runtime_status.txt com conteúdo: apathy runtime alive"
+    workspace: "."
+
+permission: autopilot

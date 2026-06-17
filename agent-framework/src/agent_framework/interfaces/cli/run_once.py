@@ -76,6 +76,8 @@ async def run_once(
     *,
     auto_approve: bool = False,
     extra_personas: dict[str, Persona] | None = None,
+    event_hook: object | None = None,
+    permission_gate: PermissionGate | None = None,
 ) -> None:
     registry = ToolRegistry()
     personas = {persona.name: persona}
@@ -83,9 +85,14 @@ async def run_once(
         personas.update(extra_personas)
     register_builtin_tools(registry, task_personas=personas)
 
-    gate = always_allow() if auto_approve else PermissionGate(ask_callback=ask_permission)
+    if permission_gate is not None:
+        gate = permission_gate
+    elif auto_approve:
+        gate = always_allow()
+    else:
+        gate = PermissionGate(ask_callback=ask_permission)
+
     orchestrator = Orchestrator(base_tools=registry, base_permission_gate=gate, workdir=workdir)
-    # Stream subagent activity so the user can watch delegation happen.
     orchestrator.subagent_event_hook = render_subagent_event
 
     agent = Agent.from_persona(persona, registry, gate, workdir)
@@ -93,4 +100,11 @@ async def run_once(
     session = Session.with_system_prompt(persona.system_prompt)
 
     async for event in agent.run_turn(session, task):
-        render_event(event)
+        if event_hook is not None:
+            import inspect
+            if inspect.iscoroutinefunction(event_hook):
+                await event_hook(event)  # type: ignore[call-arg]
+            else:
+                event_hook(event)  # type: ignore[call-arg]
+        else:
+            render_event(event)
