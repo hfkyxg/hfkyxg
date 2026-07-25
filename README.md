@@ -1,9 +1,9 @@
 <p align="center">
   <a href="https://github.com/hfkyxg/pet-ext-ap" title="Claw'd — abrir o projeto">
-    <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/main/assets/clawd-coding.gif?v=10" width="200" alt="Claw'd programando" />
+    <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/main/assets/clawd-coding.gif?v=11" width="200" alt="Claw'd programando" />
   </a>
   <br/>
-  <sub><a href="https://github.com/hfkyxg/pet-ext-ap"><b>Claw'd</b></a> · companheiro de abas · em modo Dev</sub>
+  <sub><a href="https://github.com/hfkyxg/pet-ext-ap"><b>Claw'd</b></a> · companheiro de abas</sub>
 </p>
 
 ### Frank Hepfener Fernandes
