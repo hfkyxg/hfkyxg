@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/hfkyxg/pet-ext-ap" title="Claw'd — abrir o projeto">
-    <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/main/assets/clawd-coding.gif?v=4" width="220" alt="Claw'd programando" />
+    <img src="https://raw.githubusercontent.com/hfkyxg/hfkyxg/main/assets/clawd-coding.gif?v=5" width="220" alt="Claw'd programando" />
   </a>
   <br/>
   <sub><a href="https://github.com/hfkyxg/pet-ext-ap"><b>Claw'd</b></a> · companheiro de abas · em modo Dev</sub>
